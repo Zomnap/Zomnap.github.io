@@ -23,7 +23,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="VNCTF-2026-Web WP">
 <meta property="og:url" content="https://azumisaki.github.io/2026/03/10/VN-CTF2026/index.html">
-<meta property="og:site_name" content="Sakiの博客">
+<meta property="og:site_name" content="Saki的博客">
 <meta property="og:description" content="Signin审视源码发现过滤了[‘&#x2F;‘, ‘convert’, ‘base’, ‘text’, ‘plain’]由GET体file传参进行文件包含（当file长度小等于20时）于是便可以用data协议进行文件上传包含，但是&#x2F;&#x2F;被ban，所以可以用短符号简写绕过：data;,然后，由于include具有解析上传文件的特性，能把上传的文件当作php代码识别，故可以写出以下">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://azumisaki.github.io/img/2.jpeg">
@@ -36,7 +36,7 @@
   
   
   
-  <title>VNCTF-2026-Web WP - Sakiの博客</title>
+  <title>VNCTF-2026-Web WP - Saki的博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -115,7 +115,7 @@
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
-      <strong>Saki&#39;s Blog</strong>
+      <strong>Saki的博客</strong>
     </a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
