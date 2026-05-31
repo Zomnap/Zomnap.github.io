@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://azumisaki.github.io/img/11.JPG">
 <meta property="article:published_time" content="2026-04-14T07:29:49.000Z">
-<meta property="article:modified_time" content="2026-04-28T12:10:13.719Z">
+<meta property="article:modified_time" content="2026-05-26T07:00:40.328Z">
 <meta property="article:author" content="AzumiSaki">
 <meta property="article:tag" content="-RCE漏洞">
 <meta name="twitter:card" content="summary_large_image">
@@ -240,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.9k 字
+          4k 字
         
       </span>
     
@@ -297,7 +297,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年4月28日 晚上
+                    本文最后更新于 2026年5月26日 下午
                   
                 
               </p>
@@ -489,7 +489,7 @@
 <li><code>-B 3</code>：前 3 行</li>
 </ul>
 <p>这个看上下文非常好用。</p>
-<h3 id="find指令"><a href="#find指令" class="headerlink" title="find指令"></a>find指令</h3><h4 id="最简单的指令"><a href="#最简单的指令" class="headerlink" title="最简单的指令"></a>最简单的指令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">find . -name <span class="hljs-string">&quot;文件名字&quot;</span> ---在当前目录查找，改变<span class="hljs-string">&#x27;.&#x27;</span>即可更换查找位置<br>find . -name <span class="hljs-string">&quot;name&quot;</span> 2&gt;/dev/null 意为忽略报错，更容易查找到关键信息<br>find . -name -iname <span class="hljs-string">&quot;name&quot;</span> 2&gt;/dev/null 意为忽略大小查找<br></code></pre></td></tr></table></figure>
+<h3 id="find指令"><a href="#find指令" class="headerlink" title="find指令"></a>find指令</h3><h4 id="最简单的指令"><a href="#最简单的指令" class="headerlink" title="最简单的指令"></a>最简单的指令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">find . -name <span class="hljs-string">&quot;文件名字&quot;</span> ---在当前目录查找，改变<span class="hljs-string">&#x27;.&#x27;</span>即可更换查找位置<br>find . -name <span class="hljs-string">&quot;name&quot;</span> 2&gt;/dev/null 意为忽略报错，更容易查找到关键信息<br>find . -name -iname <span class="hljs-string">&quot;name&quot;</span> 2&gt;/dev/null 意为忽略大小查找<br>find . -<span class="hljs-built_in">type</span> f -<span class="hljs-built_in">exec</span> grep -H <span class="hljs-string">&#x27;包含的字符串&#x27;</span> &#123;&#125; \; 在指定目录里查找包含指定字符串的文件 <br></code></pre></td></tr></table></figure>
 
 <h4 id="也支持通配符"><a href="#也支持通配符" class="headerlink" title="也支持通配符"></a>也支持通配符</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">find . -name <span class="hljs-string">&quot;*.txt&quot;</span>    ---找所有 `.txt` 文件。<br></code></pre></td></tr></table></figure>
 
