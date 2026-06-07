@@ -16,6 +16,48 @@ function updateRuntime() {
 setInterval(updateRuntime, 1000);
 updateRuntime();
 
+const pageViewBaselines = {
+  "/2026/03/10/VN-CTF2026/": 84,
+  "/2026/03/14/Auth-China/": 138,
+  "/2026/04/05/xss/": 118,
+  "/2026/04/07/xxe/": 105,
+  "/2026/04/08/upload/": 148,
+  "/2026/04/10/JS/": 95,
+  "/2026/04/11/include/": 86,
+  "/2026/04/14/rce/": 120,
+  "/2026/04/28/Linux/": 128,
+  "/2026/05/30/misc-web/": 120,
+  "/2026/05/31/yuwangbei/": 118,
+  "/2026/06/01/0xgame2025/": 112,
+  "/2026/06/07/浙江警察学院第九届信息网络安全竞赛/": 131,
+};
+
+function normalizePathname(pathname) {
+  try {
+    pathname = decodeURIComponent(pathname);
+  } catch (error) {
+    // Keep the browser-provided path if decoding fails.
+  }
+
+  return pathname.endsWith("/") ? pathname : `${pathname}/`;
+}
+
+function applyPageViewBaseline(useBaselineOnly) {
+  const container = document.getElementById("busuanzi_container_page_pv");
+  const value = document.getElementById("busuanzi_value_page_pv");
+  const baseline = pageViewBaselines[normalizePathname(window.location.pathname)];
+  if (!container || !value || !baseline) return;
+
+  const realViews = Number.parseInt(value.textContent.replace(/[^\d]/g, ""), 10);
+  const displayViews =
+    useBaselineOnly || !Number.isFinite(realViews)
+      ? baseline
+      : Math.max(realViews, baseline);
+
+  value.textContent = String(displayViews);
+  container.style.display = "inline";
+}
+
 function loadVisitorStats() {
   const stats = document.querySelector(".footer-statistics");
   if (!stats) return;
@@ -36,6 +78,7 @@ function loadVisitorStats() {
     if (uvValue) uvValue.textContent = uvValue.textContent.trim() || "711";
     if (pvValue) pvValue.textContent = pvValue.textContent.trim() || "1503";
     showStatsLine();
+    applyPageViewBaseline(true);
     return;
   }
 
@@ -49,17 +92,7 @@ function loadVisitorStats() {
   let attempts = 0;
   const timer = setInterval(() => {
     attempts++;
-
-    if (
-      uvValue &&
-      pvValue &&
-      uvValue.textContent.trim() &&
-      pvValue.textContent.trim()
-    ) {
-      showStatsLine();
-      clearInterval(timer);
-      return;
-    }
+    applyPageViewBaseline(false);
 
     if (attempts >= 20) {
       showStatsLine();
