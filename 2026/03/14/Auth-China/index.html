@@ -38,6 +38,8 @@
 <meta name="twitter:image" content="https://azumisaki.github.io/img/4.jpeg">
   
   
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
   
   <title>2026软件系统安全赛初赛-Web-Auth wp - Saki的博客</title>
 
@@ -104,7 +106,7 @@
 <!-- hexo injector head_end start --><link rel="stylesheet" href="/css/custom.css"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 
-<body><!-- hexo injector body_begin start --><div id="global-fx-layer"></div><!-- hexo injector body_begin end -->
+<body>
   
 
   <header>
@@ -210,7 +212,7 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('/img/4.jpeg') no-repeat center center; background-size: cover;">
+     style="background: url('/img/banner/4.webp') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.5)">
       <div class="banner-text text-center fade-in-up">
@@ -256,6 +258,14 @@
     
 
     
+    
+      
+        <span id="busuanzi_container_page_pv" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+
+      
     
   </div>
 
@@ -400,13 +410,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
+        <a href="/tags/wp-sum/" class="print-no-link">#wp/sum</a>
+      
         <a href="/tags/SSRF%E6%BC%8F%E6%B4%9E/" class="print-no-link">#SSRF漏洞</a>
       
         <a href="/tags/Pickle%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="print-no-link">#Pickle反序列化</a>
       
         <a href="/tags/jwt%E5%AF%86%E9%92%A5%E4%BC%AA%E9%80%A0/" class="print-no-link">#jwt密钥伪造</a>
-      
-        <a href="/tags/wp-sum/" class="print-no-link">#wp/sum</a>
       
     </div>
   
@@ -781,16 +791,17 @@
 
   <div class="anime-footer-wrap">
     <div class="anime-footer">
-      <div class="footer-line"><span id="runtime"></span></div>
-      <div class="footer-line footer-statistics" aria-live="polite">
-        <span id="busuanzi_container_site_uv" style="display: none">
-          总访客 <strong id="busuanzi_value_site_uv"></strong> 人
+      <div class="footer-line">
+        <span id="runtime"></span>
+      </div>
+      <div class="footer-line footer-statistics" data-site-host="azumisaki.github.io">
+        <span id="busuanzi_container_site_uv">
+          总访客 <strong id="busuanzi_value_site_uv">711</strong> 人
         </span>
-        <span class="divider footer-statistics-divider" aria-hidden="true" hidden>·</span>
-        <span id="busuanzi_container_site_pv" style="display: none">
-          总访问 <strong id="busuanzi_value_site_pv"></strong> 次
+        <span id="busuanzi_container_site_pv">
+          <span class="divider" aria-hidden="true">·</span>
+          总访问 <strong id="busuanzi_value_site_pv">1503</strong> 次
         </span>
-        <span id="visitor-stats-status">访问统计加载中...</span>
       </div>
       <div class="footer-line typing" id="footer-typing"></div>
       <div class="footer-line small">
@@ -801,8 +812,6 @@
 
   <script src="/js/navbar-hide.js"></script>
   <script src="/js/footer.js"></script>
-  <script src="/js/falling.js"></script>
   <script src="/js/corner-cat.js"></script>
-  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>

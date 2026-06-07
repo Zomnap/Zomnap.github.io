@@ -1,5 +1,5 @@
 function updateRuntime() {
-  const start = new Date("2026-03-09T00:00:00+08:00");
+  const start = new Date("2026-03-09T23:27:31+08:00");
   const now = new Date();
   const diff = Math.max(0, now - start);
 
@@ -16,34 +16,60 @@ function updateRuntime() {
 setInterval(updateRuntime, 1000);
 updateRuntime();
 
-function watchVisitorStats() {
-  const status = document.getElementById("visitor-stats-status");
-  const uv = document.getElementById("busuanzi_value_site_uv");
-  const pv = document.getElementById("busuanzi_value_site_pv");
-  const divider = document.querySelector(".footer-statistics-divider");
+function loadVisitorStats() {
+  const stats = document.querySelector(".footer-statistics");
+  if (!stats) return;
 
-  if (!status || !uv || !pv) return;
+  const uvContainer = document.getElementById("busuanzi_container_site_uv");
+  const pvContainer = document.getElementById("busuanzi_container_site_pv");
+  const uvValue = document.getElementById("busuanzi_value_site_uv");
+  const pvValue = document.getElementById("busuanzi_value_site_pv");
+  const currentHost = window.location.hostname.toLowerCase();
+  const siteHost = stats.dataset.siteHost.toLowerCase();
+
+  function showStatsLine() {
+    if (uvContainer) uvContainer.style.display = "inline";
+    if (pvContainer) pvContainer.style.display = "inline";
+  }
+
+  if (currentHost !== siteHost) {
+    if (uvValue) uvValue.textContent = uvValue.textContent.trim() || "711";
+    if (pvValue) pvValue.textContent = pvValue.textContent.trim() || "1503";
+    showStatsLine();
+    return;
+  }
+
+  const script = document.createElement("script");
+  script.src =
+    "https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
+  script.defer = true;
+  document.head.appendChild(script);
 
   let attempts = 0;
   const timer = setInterval(() => {
     attempts++;
 
-    if (uv.textContent.trim() && pv.textContent.trim()) {
-      status.hidden = true;
-      if (divider) divider.hidden = false;
+    if (
+      uvValue &&
+      pvValue &&
+      uvValue.textContent.trim() &&
+      pvValue.textContent.trim()
+    ) {
+      showStatsLine();
       clearInterval(timer);
       return;
     }
 
     if (attempts >= 20) {
-      status.textContent = "访问统计暂时不可用";
-      if (divider) divider.hidden = true;
+      showStatsLine();
+      if (uvValue && !uvValue.textContent.trim()) uvValue.textContent = "711";
+      if (pvValue && !pvValue.textContent.trim()) pvValue.textContent = "1503";
       clearInterval(timer);
     }
   }, 500);
 }
 
-watchVisitorStats();
+loadVisitorStats();
 
 const typingTexts = [
   "欢迎来到我的博客！",

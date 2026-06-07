@@ -79,6 +79,31 @@
   
   
   <entry>
+    <title>一些雑魚web题的wp</title>
+    <link href="/2026/05/30/misc-web/"/>
+    <url>/2026/05/30/misc-web/</url>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>此靶场为玄机靶场，内置题目有大概20道左右，会不定时更新的，直到做完为止</p><h2 id="Git-目录信息泄露"><a href="#Git-目录信息泄露" class="headerlink" title=".Git - 目录信息泄露"></a>.Git - 目录信息泄露</h2><p>这题考察的是git目录泄露，先用dirsearch扫，发现有</p><p><img src="/img/misc-web/1.png"></p><p>于是拿工具进行dump，在index源码里面发现flag</p><p><img src="/img/misc-web/2.png"></p><p><img src="/img/misc-web/3.png"></p><h2 id="Alist-粗心的配置"><a href="#Alist-粗心的配置" class="headerlink" title="Alist - 粗心的配置"></a>Alist - 粗心的配置</h2><p>首先看到首页有一个bash执行历史记录，打开根据alist设置语法发现将管理员账号admin的密码设置为123456</p><p><img src="/img/misc-web/4.png"></p><p><img src="/img/misc-web/5.png"></p><p>于是登录管理界面后，找到存储界面，发现可以改主页的根目录，所以便改成&#x2F;目录，回到主页，发现flag</p><p><img src="/img/misc-web/6.png"></p><p><img src="/img/misc-web/7.png"></p><p><img src="/img/misc-web/8.png"></p><h2 id="Druid-未授权登录爆破"><a href="#Druid-未授权登录爆破" class="headerlink" title="Druid - 未授权登录爆破"></a>Druid - 未授权登录爆破</h2><p>点开首页提示存在api接口配置泄露，于是扫目录</p><p><img src="/img/misc-web/9.png"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>-wp -日常刷题</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Linux</title>
     <link href="/2026/04/28/Linux/"/>
     <url>/2026/04/28/Linux/</url>
@@ -258,13 +283,13 @@
     
     <tags>
       
+      <tag>wp/sum</tag>
+      
       <tag>SSRF漏洞</tag>
       
       <tag>Pickle反序列化</tag>
       
       <tag>jwt密钥伪造</tag>
-      
-      <tag>wp/sum</tag>
       
     </tags>
     
