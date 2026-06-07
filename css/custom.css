@@ -223,6 +223,26 @@ body.dark .anime-footer {
   opacity: 0.82;
 }
 
+.footer-statistics {
+  min-height: 21px;
+  font-variant-numeric: tabular-nums;
+}
+
+.footer-statistics strong {
+  color: #c86196;
+  font-size: 1.05em;
+}
+
+[data-default-color-scheme="dark"] .footer-statistics strong,
+html.dark .footer-statistics strong,
+body.dark .footer-statistics strong {
+  color: #f0b8da;
+}
+
+#visitor-stats-status {
+  opacity: 0.72;
+}
+
 .divider {
   margin: 0 8px;
   opacity: 0.6;

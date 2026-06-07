@@ -1,7 +1,7 @@
 function updateRuntime() {
-  const start = new Date("2026-03-16 00:00:00");
+  const start = new Date("2026-03-09T00:00:00+08:00");
   const now = new Date();
-  const diff = now - start;
+  const diff = Math.max(0, now - start);
 
   const d = Math.floor(diff / (1000 * 60 * 60 * 24));
   const h = Math.floor(diff / (1000 * 60 * 60)) % 24;
@@ -15,6 +15,35 @@ function updateRuntime() {
 }
 setInterval(updateRuntime, 1000);
 updateRuntime();
+
+function watchVisitorStats() {
+  const status = document.getElementById("visitor-stats-status");
+  const uv = document.getElementById("busuanzi_value_site_uv");
+  const pv = document.getElementById("busuanzi_value_site_pv");
+  const divider = document.querySelector(".footer-statistics-divider");
+
+  if (!status || !uv || !pv) return;
+
+  let attempts = 0;
+  const timer = setInterval(() => {
+    attempts++;
+
+    if (uv.textContent.trim() && pv.textContent.trim()) {
+      status.hidden = true;
+      if (divider) divider.hidden = false;
+      clearInterval(timer);
+      return;
+    }
+
+    if (attempts >= 20) {
+      status.textContent = "访问统计暂时不可用";
+      if (divider) divider.hidden = true;
+      clearInterval(timer);
+    }
+  }, 500);
+}
+
+watchVisitorStats();
 
 const typingTexts = [
   "欢迎来到我的博客！",
