@@ -43,6 +43,7 @@ function loadVisitorStats() {
   script.src =
     "https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
   script.defer = true;
+  script.referrerPolicy = "no-referrer-when-downgrade";
   document.head.appendChild(script);
 
   let attempts = 0;
