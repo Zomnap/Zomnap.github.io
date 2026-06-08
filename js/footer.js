@@ -39,23 +39,43 @@ function normalizePathname(pathname) {
     // Keep the browser-provided path if decoding fails.
   }
 
+  pathname = pathname.replace(/\/index\.html$/i, "/");
   return pathname.endsWith("/") ? pathname : `${pathname}/`;
 }
 
-function setPageViewMinimum() {
-  const pagePv = document.getElementById("busuanzi_value_page_pv");
-  if (!pagePv) return;
+function enforceMinimumNumber(element, minimum) {
+  if (!element || !minimum) return;
 
-  const baseline = pageViewBaselines[normalizePathname(window.location.pathname)];
-  if (!baseline) return;
+  let updating = false;
+  const apply = () => {
+    if (updating) return;
 
-  const value = Number.parseInt(pagePv.textContent.replace(/[^\d]/g, ""), 10);
-  if (!Number.isFinite(value) || value < baseline) {
-    pagePv.textContent = String(baseline);
+    const value = Number.parseInt(element.textContent.replace(/[^\d]/g, ""), 10);
+    if (!Number.isFinite(value) || value < minimum) {
+      updating = true;
+      element.textContent = String(minimum);
+      updating = false;
+    }
+  };
+
+  apply();
+
+  if (window.MutationObserver) {
+    new MutationObserver(apply).observe(element, {
+      childList: true,
+      characterData: true,
+      subtree: true,
+    });
   }
 }
 
-setPageViewMinimum();
+function protectPageViewMinimum() {
+  const pagePv = document.getElementById("busuanzi_value_page_pv");
+  const baseline = pageViewBaselines[normalizePathname(window.location.pathname)];
+  enforceMinimumNumber(pagePv, baseline);
+}
+
+protectPageViewMinimum();
 
 function loadVisitorStats() {
   const stats = document.querySelector(".footer-statistics");
@@ -73,35 +93,15 @@ function loadVisitorStats() {
   const siteUvBase = Number.parseInt(siteUv && siteUv.textContent, 10) || 0;
   const sitePvBase = Number.parseInt(sitePv && sitePv.textContent, 10) || 0;
 
+  enforceMinimumNumber(siteUv, siteUvBase);
+  enforceMinimumNumber(sitePv, sitePvBase);
+
   const script = document.createElement("script");
   script.src =
     "https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
   script.defer = true;
   script.referrerPolicy = "no-referrer-when-downgrade";
   document.head.appendChild(script);
-
-  let attempts = 0;
-  const timer = setInterval(() => {
-    attempts++;
-
-    if (siteUv) {
-      const value = Number.parseInt(siteUv.textContent.replace(/[^\d]/g, ""), 10);
-      if (Number.isFinite(value) && value < siteUvBase) {
-        siteUv.textContent = String(siteUvBase);
-      }
-    }
-
-    if (sitePv) {
-      const value = Number.parseInt(sitePv.textContent.replace(/[^\d]/g, ""), 10);
-      if (Number.isFinite(value) && value < sitePvBase) {
-        sitePv.textContent = String(sitePvBase);
-      }
-    }
-
-    setPageViewMinimum();
-
-    if (attempts >= 20) clearInterval(timer);
-  }, 500);
 }
 
 loadVisitorStats();
