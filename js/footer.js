@@ -16,93 +16,13 @@ function updateRuntime() {
 setInterval(updateRuntime, 1000);
 updateRuntime();
 
-const pageViewBaselines = {
-  "/2026/03/10/VN-CTF2026/": 84,
-  "/2026/03/14/Auth-China/": 138,
-  "/2026/04/05/xss/": 118,
-  "/2026/04/07/xxe/": 105,
-  "/2026/04/08/upload/": 148,
-  "/2026/04/10/JS/": 95,
-  "/2026/04/11/include/": 86,
-  "/2026/04/14/rce/": 120,
-  "/2026/04/28/Linux/": 128,
-  "/2026/05/30/misc-web/": 120,
-  "/2026/05/31/yuwangbei/": 118,
-  "/2026/06/01/0xgame2025/": 112,
-  "/2026/06/07/浙江警察学院第九届信息网络安全竞赛/": 131,
-};
-
-const pageViewAnchors = {
-  "/2026/03/10/VN-CTF2026/": 47,
-  "/2026/03/14/Auth-China/": 132,
-  "/2026/04/05/xss/": 57,
-  "/2026/04/07/xxe/": 64,
-  "/2026/04/08/upload/": 39,
-  "/2026/04/10/JS/": 18,
-  "/2026/04/11/include/": 18,
-  "/2026/04/14/rce/": 92,
-  "/2026/04/28/Linux/": 23,
-  "/2026/05/30/misc-web/": 4,
-  "/2026/05/31/yuwangbei/": 25,
-  "/2026/06/01/0xgame2025/": 55,
-  "/2026/06/07/浙江警察学院第九届信息网络安全竞赛/": 25,
-};
-
-function normalizePathname(pathname) {
-  try {
-    pathname = decodeURIComponent(pathname);
-  } catch (error) {
-    // Keep the browser-provided path if decoding fails.
-  }
-
-  return pathname.endsWith("/") ? pathname : `${pathname}/`;
-}
-
-function applyPageViewBaseline(useBaselineOnly) {
-  const container = document.getElementById("busuanzi_container_page_pv");
-  const value = document.getElementById("busuanzi_value_page_pv");
-  const pathname = normalizePathname(window.location.pathname);
-  const baseline = pageViewBaselines[pathname];
-  if (!container || !value || !baseline) return true;
-  if (value.dataset.baselineApplied === "true") return true;
-
-  const realViews = Number.parseInt(value.textContent.replace(/[^\d]/g, ""), 10);
-  if (!useBaselineOnly && !Number.isFinite(realViews)) return false;
-
-  const anchor = pageViewAnchors[pathname] || 0;
-  const displayViews = useBaselineOnly
-    ? baseline
-    : baseline + Math.max(0, realViews - anchor);
-
-  value.textContent = String(displayViews);
-  value.dataset.baselineApplied = "true";
-  container.style.display = "inline";
-  return true;
-}
-
 function loadVisitorStats() {
   const stats = document.querySelector(".footer-statistics");
   if (!stats) return;
 
-  const uvContainer = document.getElementById("busuanzi_container_site_uv");
-  const pvContainer = document.getElementById("busuanzi_container_site_pv");
-  const uvValue = document.getElementById("busuanzi_value_site_uv");
-  const pvValue = document.getElementById("busuanzi_value_site_pv");
   const currentHost = window.location.hostname.toLowerCase();
   const siteHost = stats.dataset.siteHost.toLowerCase();
-
-  function showStatsLine() {
-    if (uvContainer) uvContainer.style.display = "inline";
-    if (pvContainer) pvContainer.style.display = "inline";
-  }
-
-  if (currentHost !== siteHost) {
-    if (uvValue) uvValue.textContent = uvValue.textContent.trim() || "711";
-    if (pvValue) pvValue.textContent = pvValue.textContent.trim() || "1503";
-    showStatsLine();
-    applyPageViewBaseline(true);
-    return;
-  }
+  if (currentHost !== siteHost) return;
 
   const script = document.createElement("script");
   script.src =
@@ -110,31 +30,6 @@ function loadVisitorStats() {
   script.defer = true;
   script.referrerPolicy = "no-referrer-when-downgrade";
   document.head.appendChild(script);
-
-  let attempts = 0;
-  const timer = setInterval(() => {
-    attempts++;
-    const pageViewsReady = applyPageViewBaseline(false);
-    const siteStatsReady =
-      uvValue &&
-      pvValue &&
-      uvValue.textContent.trim() &&
-      pvValue.textContent.trim();
-
-    if (siteStatsReady) showStatsLine();
-    if (pageViewsReady && siteStatsReady) {
-      clearInterval(timer);
-      return;
-    }
-
-    if (attempts >= 20) {
-      showStatsLine();
-      if (uvValue && !uvValue.textContent.trim()) uvValue.textContent = "711";
-      if (pvValue && !pvValue.textContent.trim()) pvValue.textContent = "1503";
-      applyPageViewBaseline(true);
-      clearInterval(timer);
-    }
-  }, 500);
 }
 
 loadVisitorStats();
