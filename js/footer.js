@@ -16,6 +16,47 @@ function updateRuntime() {
 setInterval(updateRuntime, 1000);
 updateRuntime();
 
+const pageViewBaselines = {
+  "/2026/03/10/VN-CTF2026/": 84,
+  "/2026/03/14/Auth-China/": 138,
+  "/2026/04/05/xss/": 118,
+  "/2026/04/07/xxe/": 105,
+  "/2026/04/08/upload/": 148,
+  "/2026/04/10/JS/": 95,
+  "/2026/04/11/include/": 86,
+  "/2026/04/14/rce/": 120,
+  "/2026/04/28/Linux/": 128,
+  "/2026/05/30/misc-web/": 120,
+  "/2026/05/31/yuwangbei/": 118,
+  "/2026/06/01/0xgame2025/": 112,
+  "/2026/06/07/浙江警察学院第九届信息网络安全竞赛/": 131,
+};
+
+function normalizePathname(pathname) {
+  try {
+    pathname = decodeURIComponent(pathname);
+  } catch (error) {
+    // Keep the browser-provided path if decoding fails.
+  }
+
+  return pathname.endsWith("/") ? pathname : `${pathname}/`;
+}
+
+function setPageViewMinimum() {
+  const pagePv = document.getElementById("busuanzi_value_page_pv");
+  if (!pagePv) return;
+
+  const baseline = pageViewBaselines[normalizePathname(window.location.pathname)];
+  if (!baseline) return;
+
+  const value = Number.parseInt(pagePv.textContent.replace(/[^\d]/g, ""), 10);
+  if (!Number.isFinite(value) || value < baseline) {
+    pagePv.textContent = String(baseline);
+  }
+}
+
+setPageViewMinimum();
+
 function loadVisitorStats() {
   const stats = document.querySelector(".footer-statistics");
   if (!stats) return;
@@ -56,6 +97,8 @@ function loadVisitorStats() {
         sitePv.textContent = String(sitePvBase);
       }
     }
+
+    setPageViewMinimum();
 
     if (attempts >= 20) clearInterval(timer);
   }, 500);
