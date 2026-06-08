@@ -21,8 +21,11 @@ function loadVisitorStats() {
   if (!stats) return;
 
   const currentHost = window.location.hostname.toLowerCase();
-  const siteHost = stats.dataset.siteHost.toLowerCase();
-  if (currentHost !== siteHost) return;
+  const siteHosts = (stats.dataset.siteHosts || stats.dataset.siteHost || "")
+    .split(",")
+    .map((host) => host.trim().toLowerCase())
+    .filter(Boolean);
+  if (!siteHosts.includes(currentHost)) return;
 
   const script = document.createElement("script");
   script.src =
