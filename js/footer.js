@@ -32,6 +32,22 @@ const pageViewBaselines = {
   "/2026/06/07/浙江警察学院第九届信息网络安全竞赛/": 131,
 };
 
+const pageViewAnchors = {
+  "/2026/03/10/VN-CTF2026/": 47,
+  "/2026/03/14/Auth-China/": 132,
+  "/2026/04/05/xss/": 57,
+  "/2026/04/07/xxe/": 64,
+  "/2026/04/08/upload/": 39,
+  "/2026/04/10/JS/": 18,
+  "/2026/04/11/include/": 18,
+  "/2026/04/14/rce/": 92,
+  "/2026/04/28/Linux/": 23,
+  "/2026/05/30/misc-web/": 4,
+  "/2026/05/31/yuwangbei/": 25,
+  "/2026/06/01/0xgame2025/": 55,
+  "/2026/06/07/浙江警察学院第九届信息网络安全竞赛/": 25,
+};
+
 function normalizePathname(pathname) {
   try {
     pathname = decodeURIComponent(pathname);
@@ -45,17 +61,23 @@ function normalizePathname(pathname) {
 function applyPageViewBaseline(useBaselineOnly) {
   const container = document.getElementById("busuanzi_container_page_pv");
   const value = document.getElementById("busuanzi_value_page_pv");
-  const baseline = pageViewBaselines[normalizePathname(window.location.pathname)];
-  if (!container || !value || !baseline) return;
+  const pathname = normalizePathname(window.location.pathname);
+  const baseline = pageViewBaselines[pathname];
+  if (!container || !value || !baseline) return true;
+  if (value.dataset.baselineApplied === "true") return true;
 
   const realViews = Number.parseInt(value.textContent.replace(/[^\d]/g, ""), 10);
-  const displayViews =
-    useBaselineOnly || !Number.isFinite(realViews)
-      ? baseline
-      : Math.max(realViews, baseline);
+  if (!useBaselineOnly && !Number.isFinite(realViews)) return false;
+
+  const anchor = pageViewAnchors[pathname] || 0;
+  const displayViews = useBaselineOnly
+    ? baseline
+    : baseline + Math.max(0, realViews - anchor);
 
   value.textContent = String(displayViews);
+  value.dataset.baselineApplied = "true";
   container.style.display = "inline";
+  return true;
 }
 
 function loadVisitorStats() {
@@ -92,12 +114,24 @@ function loadVisitorStats() {
   let attempts = 0;
   const timer = setInterval(() => {
     attempts++;
-    applyPageViewBaseline(false);
+    const pageViewsReady = applyPageViewBaseline(false);
+    const siteStatsReady =
+      uvValue &&
+      pvValue &&
+      uvValue.textContent.trim() &&
+      pvValue.textContent.trim();
+
+    if (siteStatsReady) showStatsLine();
+    if (pageViewsReady && siteStatsReady) {
+      clearInterval(timer);
+      return;
+    }
 
     if (attempts >= 20) {
       showStatsLine();
       if (uvValue && !uvValue.textContent.trim()) uvValue.textContent = "711";
       if (pvValue && !pvValue.textContent.trim()) pvValue.textContent = "1503";
+      applyPageViewBaseline(true);
       clearInterval(timer);
     }
   }, 500);
