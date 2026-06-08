@@ -27,12 +27,38 @@ function loadVisitorStats() {
     .filter(Boolean);
   if (!siteHosts.includes(currentHost)) return;
 
+  const siteUv = document.getElementById("busuanzi_value_site_uv");
+  const sitePv = document.getElementById("busuanzi_value_site_pv");
+  const siteUvBase = Number.parseInt(siteUv && siteUv.textContent, 10) || 0;
+  const sitePvBase = Number.parseInt(sitePv && sitePv.textContent, 10) || 0;
+
   const script = document.createElement("script");
   script.src =
     "https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
   script.defer = true;
   script.referrerPolicy = "no-referrer-when-downgrade";
   document.head.appendChild(script);
+
+  let attempts = 0;
+  const timer = setInterval(() => {
+    attempts++;
+
+    if (siteUv) {
+      const value = Number.parseInt(siteUv.textContent.replace(/[^\d]/g, ""), 10);
+      if (Number.isFinite(value) && value < siteUvBase) {
+        siteUv.textContent = String(siteUvBase);
+      }
+    }
+
+    if (sitePv) {
+      const value = Number.parseInt(sitePv.textContent.replace(/[^\d]/g, ""), 10);
+      if (Number.isFinite(value) && value < sitePvBase) {
+        sitePv.textContent = String(sitePvBase);
+      }
+    }
+
+    if (attempts >= 20) clearInterval(timer);
+  }, 500);
 }
 
 loadVisitorStats();
