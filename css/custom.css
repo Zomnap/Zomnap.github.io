@@ -115,6 +115,48 @@ pre {
     transform: translateY(0);
   }
 }
+/* ===== 全局特效层 ===== */
+#global-fx-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* 飘落元素 */
+.falling-item {
+  position: fixed;
+  top: -10vh;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.75;
+  animation-name: fallDown, swaySide;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+}
+
+@keyframes fallDown {
+  from {
+    transform: translateY(-10vh) rotate(0deg);
+  }
+  to {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+@keyframes swaySide {
+  0% {
+    margin-left: 0;
+  }
+  50% {
+    margin-left: 22px;
+  }
+  100% {
+    margin-left: 0;
+  }
+}
+
 /* ===== 自定义底部区域 ===== */
 .anime-footer-wrap {
   position: relative;
@@ -179,24 +221,6 @@ body.dark .anime-footer {
 .footer-line.small {
   font-size: 12px;
   opacity: 0.82;
-}
-
-.footer-statistics {
-  min-height: 21px;
-  font-size: clamp(12px, 2.6vw, 14px);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.footer-statistics strong {
-  color: #c86196;
-  font-size: 1.05em;
-}
-
-[data-default-color-scheme="dark"] .footer-statistics strong,
-html.dark .footer-statistics strong,
-body.dark .footer-statistics strong {
-  color: #f0b8da;
 }
 
 .divider {
@@ -399,6 +423,9 @@ footer.footer,
 #footer,
 .footer-content {
   display: none !important;
+}
+.falling-item {
+  filter: blur(0.3px);
 }
 /* ===== 页面角落小猫 ===== */
 /* ===== SVG 小猫 ===== */

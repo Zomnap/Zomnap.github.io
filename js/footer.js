@@ -16,33 +16,6 @@ function updateRuntime() {
 setInterval(updateRuntime, 1000);
 updateRuntime();
 
-const pageViewBaselines = {
-  "/2026/03/10/VN-CTF2026/": 84,
-  "/2026/03/14/Auth-China/": 138,
-  "/2026/04/05/xss/": 118,
-  "/2026/04/07/xxe/": 105,
-  "/2026/04/08/upload/": 148,
-  "/2026/04/10/JS/": 95,
-  "/2026/04/11/include/": 86,
-  "/2026/04/14/rce/": 120,
-  "/2026/04/28/Linux/": 128,
-  "/2026/05/30/misc-web/": 120,
-  "/2026/05/31/yuwangbei/": 118,
-  "/2026/06/01/0xgame2025/": 112,
-  "/2026/06/07/浙江警察学院第九届信息网络安全竞赛/": 131,
-};
-
-function normalizePathname(pathname) {
-  try {
-    pathname = decodeURIComponent(pathname);
-  } catch (error) {
-    // Keep the browser-provided path if decoding fails.
-  }
-
-  pathname = pathname.replace(/\/index\.html$/i, "/");
-  return pathname.endsWith("/") ? pathname : `${pathname}/`;
-}
-
 function enforceMinimumNumber(element, minimum) {
   if (!element || !minimum) return;
 
@@ -69,32 +42,27 @@ function enforceMinimumNumber(element, minimum) {
   }
 }
 
-function protectPageViewMinimum() {
-  const pagePv = document.getElementById("busuanzi_value_page_pv");
-  const baseline = pageViewBaselines[normalizePathname(window.location.pathname)];
-  enforceMinimumNumber(pagePv, baseline);
-}
-
-protectPageViewMinimum();
-
 function loadVisitorStats() {
   const stats = document.querySelector(".footer-statistics");
-  if (!stats) return;
+  const pagePv = document.getElementById("busuanzi_value_page_pv");
 
   const currentHost = window.location.hostname.toLowerCase();
-  const siteHosts = (stats.dataset.siteHosts || stats.dataset.siteHost || "")
+  const siteHosts = ((stats && (stats.dataset.siteHosts || stats.dataset.siteHost)) || "")
     .split(",")
     .map((host) => host.trim().toLowerCase())
     .filter(Boolean);
-  if (!siteHosts.includes(currentHost)) return;
+  const shouldLoadSiteStats = stats && siteHosts.includes(currentHost);
+  if (!pagePv && !shouldLoadSiteStats) return;
 
-  const siteUv = document.getElementById("busuanzi_value_site_uv");
-  const sitePv = document.getElementById("busuanzi_value_site_pv");
-  const siteUvBase = Number.parseInt(siteUv && siteUv.textContent, 10) || 0;
-  const sitePvBase = Number.parseInt(sitePv && sitePv.textContent, 10) || 0;
+  if (shouldLoadSiteStats) {
+    const siteUv = document.getElementById("busuanzi_value_site_uv");
+    const sitePv = document.getElementById("busuanzi_value_site_pv");
+    const siteUvBase = Number.parseInt(siteUv && siteUv.textContent, 10) || 0;
+    const sitePvBase = Number.parseInt(sitePv && sitePv.textContent, 10) || 0;
 
-  enforceMinimumNumber(siteUv, siteUvBase);
-  enforceMinimumNumber(sitePv, sitePvBase);
+    enforceMinimumNumber(siteUv, siteUvBase);
+    enforceMinimumNumber(sitePv, sitePvBase);
+  }
 
   const script = document.createElement("script");
   script.src =
