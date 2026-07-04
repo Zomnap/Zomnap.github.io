@@ -87,7 +87,26 @@
 
 
   
-<!-- hexo injector head_end start --><link rel="stylesheet" href="/css/custom.css"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
+<!-- hexo injector head_end start -->
+  <link rel="stylesheet" href="/css/custom.css">
+  <script>
+    (function() {
+      var canonicalOrigin = "https://zomnap.kdns.fr";
+      var redirectHosts = ["zomnap.github.io"];
+      var currentHost = window.location.hostname.toLowerCase();
+      if (!redirectHosts.includes(currentHost)) return;
+
+      var target =
+        canonicalOrigin +
+        window.location.pathname +
+        window.location.search +
+        window.location.hash;
+      if (window.location.href !== target) {
+        window.location.replace(target);
+      }
+    })();
+  </script>
+  <!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.1.1"></head>
 
 
 <body>
@@ -412,7 +431,7 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mr6bkiuy"></script>
+  <script src="/js/footer.js?v=mr6cr7e8"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>
