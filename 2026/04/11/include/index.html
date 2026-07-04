@@ -22,7 +22,7 @@
     <meta name="description" content="开篇(部分来源于PHP 文件包含功能的利用与绕过策略全解析 - yuccun’s blog)首先了解php两种文件包含的形式：require()和include() require函数：找不到被包含的文件会产生致命错误，并停止脚本运行 而include函数只能输出报错信息 方法1：本地文件包含(LFI) 远程文件包含(RFI) 伪协议12345678910111213141516--最经典的读文件">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记录一次文件包含的学习以及实战演练">
-<meta property="og:url" content="https://zomnap.kdns.fr/2026/04/11/include/index.html">
+<meta property="og:url" content="https://zomnap.kdns.fr/2026/04/11/include/">
 <meta property="og:site_name" content="Zomnap的博客">
 <meta property="og:description" content="开篇(部分来源于PHP 文件包含功能的利用与绕过策略全解析 - yuccun’s blog)首先了解php两种文件包含的形式：require()和include() require函数：找不到被包含的文件会产生致命错误，并停止脚本运行 而include函数只能输出报错信息 方法1：本地文件包含(LFI) 远程文件包含(RFI) 伪协议12345678910111213141516--最经典的读文件">
 <meta property="og:locale" content="zh_CN">
@@ -106,14 +106,48 @@
     (function() {
       var canonicalOrigin = "https://zomnap.kdns.fr";
       var redirectHosts = ["zomnap.github.io"];
-      var currentHost = window.location.hostname.toLowerCase();
-      if (!redirectHosts.includes(currentHost)) return;
+      var currentUrl = new URL(window.location.href);
+      var currentHost = currentUrl.hostname.toLowerCase();
 
+      function normalizePathname(pathname) {
+        var normalized = pathname || "/";
+
+        normalized = normalized
+          .split("/")
+          .map(function(segment) {
+            if (!segment) return "";
+            try {
+              return encodeURIComponent(decodeURIComponent(segment));
+            } catch (error) {
+              return encodeURIComponent(segment);
+            }
+          })
+          .join("/");
+
+        normalized = normalized.replace(/\\/g, "/");
+        normalized = normalized.replace(/\/index\.html$/i, "/");
+
+        if (
+          normalized !== "/" &&
+          !/\.[^/]+$/i.test(normalized) &&
+          !normalized.endsWith("/")
+        ) {
+          normalized += "/";
+        }
+
+        normalized = normalized.replace(/\/+/g, "/");
+        return normalized || "/";
+      }
+
+      var normalizedPathname = normalizePathname(currentUrl.pathname);
+      var targetOrigin = redirectHosts.includes(currentHost)
+        ? canonicalOrigin
+        : currentUrl.origin;
       var target =
-        canonicalOrigin +
-        window.location.pathname +
-        window.location.search +
-        window.location.hash;
+        targetOrigin +
+        normalizedPathname +
+        currentUrl.search +
+        currentUrl.hash;
       if (window.location.href !== target) {
         window.location.replace(target);
       }
@@ -942,7 +976,7 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mr6cyi7r"></script>
+  <script src="/js/footer.js?v=mr6dpee6"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>

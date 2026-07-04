@@ -22,7 +22,7 @@
     <meta name="description" content="前言首先rce的实质就是在系统上运行恶意代码，大部分主流系统都是Linux，也有ubuntu，Windows的，但是很少见 首先在CTF的场景下对于“cat”指令的绕过123456789101112131415161718192021&#96;more&#96;:一页一页的显示档案内容 more &#x2F;tmp&#x2F;flag.txt&#96;less&#96;:与 more 类似 less &#x2F;tmp&#x2F;flag.txt&#96;head&#96;:查看头几">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记录一次RCE的学习和有关Linux基础指令学习">
-<meta property="og:url" content="https://zomnap.kdns.fr/2026/04/14/rce/index.html">
+<meta property="og:url" content="https://zomnap.kdns.fr/2026/04/14/rce/">
 <meta property="og:site_name" content="Zomnap的博客">
 <meta property="og:description" content="前言首先rce的实质就是在系统上运行恶意代码，大部分主流系统都是Linux，也有ubuntu，Windows的，但是很少见 首先在CTF的场景下对于“cat”指令的绕过123456789101112131415161718192021&#96;more&#96;:一页一页的显示档案内容 more &#x2F;tmp&#x2F;flag.txt&#96;less&#96;:与 more 类似 less &#x2F;tmp&#x2F;flag.txt&#96;head&#96;:查看头几">
 <meta property="og:locale" content="zh_CN">
@@ -106,14 +106,48 @@
     (function() {
       var canonicalOrigin = "https://zomnap.kdns.fr";
       var redirectHosts = ["zomnap.github.io"];
-      var currentHost = window.location.hostname.toLowerCase();
-      if (!redirectHosts.includes(currentHost)) return;
+      var currentUrl = new URL(window.location.href);
+      var currentHost = currentUrl.hostname.toLowerCase();
 
+      function normalizePathname(pathname) {
+        var normalized = pathname || "/";
+
+        normalized = normalized
+          .split("/")
+          .map(function(segment) {
+            if (!segment) return "";
+            try {
+              return encodeURIComponent(decodeURIComponent(segment));
+            } catch (error) {
+              return encodeURIComponent(segment);
+            }
+          })
+          .join("/");
+
+        normalized = normalized.replace(/\\/g, "/");
+        normalized = normalized.replace(/\/index\.html$/i, "/");
+
+        if (
+          normalized !== "/" &&
+          !/\.[^/]+$/i.test(normalized) &&
+          !normalized.endsWith("/")
+        ) {
+          normalized += "/";
+        }
+
+        normalized = normalized.replace(/\/+/g, "/");
+        return normalized || "/";
+      }
+
+      var normalizedPathname = normalizePathname(currentUrl.pathname);
+      var targetOrigin = redirectHosts.includes(currentHost)
+        ? canonicalOrigin
+        : currentUrl.origin;
       var target =
-        canonicalOrigin +
-        window.location.pathname +
-        window.location.search +
-        window.location.hash;
+        targetOrigin +
+        normalizedPathname +
+        currentUrl.search +
+        currentUrl.hash;
       if (window.location.href !== target) {
         window.location.replace(target);
       }
@@ -1135,7 +1169,7 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mr6cyi7r"></script>
+  <script src="/js/footer.js?v=mr6dpee6"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>

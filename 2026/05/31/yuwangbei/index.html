@@ -22,7 +22,7 @@
     <meta name="description" content="前言这个比赛怎么说呢。。。有点恶心，pwn题环境一直是崩的打不开，web题简单的要命，misc题净出些老题，只能说拉完了 WEB-PHP_Payment开题，首先看到是一个购物界面，经典逻辑漏洞题，题目又说道要用base64的形式传参获得优惠券来增长余额，所以先看到题目附件，发现存在php反序列化接口  随后跳转到moudle.php，可以看到，先是创建了一个PromoManager对象，然后再_">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2026御网杯-web全解">
-<meta property="og:url" content="https://zomnap.kdns.fr/2026/05/31/yuwangbei/index.html">
+<meta property="og:url" content="https://zomnap.kdns.fr/2026/05/31/yuwangbei/">
 <meta property="og:site_name" content="Zomnap的博客">
 <meta property="og:description" content="前言这个比赛怎么说呢。。。有点恶心，pwn题环境一直是崩的打不开，web题简单的要命，misc题净出些老题，只能说拉完了 WEB-PHP_Payment开题，首先看到是一个购物界面，经典逻辑漏洞题，题目又说道要用base64的形式传参获得优惠券来增长余额，所以先看到题目附件，发现存在php反序列化接口  随后跳转到moudle.php，可以看到，先是创建了一个PromoManager对象，然后再_">
 <meta property="og:locale" content="zh_CN">
@@ -106,14 +106,48 @@
     (function() {
       var canonicalOrigin = "https://zomnap.kdns.fr";
       var redirectHosts = ["zomnap.github.io"];
-      var currentHost = window.location.hostname.toLowerCase();
-      if (!redirectHosts.includes(currentHost)) return;
+      var currentUrl = new URL(window.location.href);
+      var currentHost = currentUrl.hostname.toLowerCase();
 
+      function normalizePathname(pathname) {
+        var normalized = pathname || "/";
+
+        normalized = normalized
+          .split("/")
+          .map(function(segment) {
+            if (!segment) return "";
+            try {
+              return encodeURIComponent(decodeURIComponent(segment));
+            } catch (error) {
+              return encodeURIComponent(segment);
+            }
+          })
+          .join("/");
+
+        normalized = normalized.replace(/\\/g, "/");
+        normalized = normalized.replace(/\/index\.html$/i, "/");
+
+        if (
+          normalized !== "/" &&
+          !/\.[^/]+$/i.test(normalized) &&
+          !normalized.endsWith("/")
+        ) {
+          normalized += "/";
+        }
+
+        normalized = normalized.replace(/\/+/g, "/");
+        return normalized || "/";
+      }
+
+      var normalizedPathname = normalizePathname(currentUrl.pathname);
+      var targetOrigin = redirectHosts.includes(currentHost)
+        ? canonicalOrigin
+        : currentUrl.origin;
       var target =
-        canonicalOrigin +
-        window.location.pathname +
-        window.location.search +
-        window.location.hash;
+        targetOrigin +
+        normalizedPathname +
+        currentUrl.search +
+        currentUrl.hash;
       if (window.location.href !== target) {
         window.location.replace(target);
       }
@@ -787,7 +821,7 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mr6cyi7r"></script>
+  <script src="/js/footer.js?v=mr6dpee6"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>

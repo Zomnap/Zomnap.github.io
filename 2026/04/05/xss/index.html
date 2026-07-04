@@ -22,7 +22,7 @@
     <meta name="description" content="前置知识-XSS漏洞首先xss漏洞是攻击者通过在输入框内拼接，插入，执行恶意js代码导致的由前端逐渐转向后端的前端漏洞 而常见的注入点有：文件上传 json的callback函数 富文本编辑器 用户名 用户资料&#x2F;信息 评论区&#x2F;聊天框 备注 后台配置项(网站标题 Logo链接等) 搜索框(以下是”xxx”的搜索结果) 报错(“xxx”输入存在错误&#x2F;敏感字符)，而文件上传">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记一次xss漏洞的学习和好靶场的刷题日志">
-<meta property="og:url" content="https://zomnap.kdns.fr/2026/04/05/xss/index.html">
+<meta property="og:url" content="https://zomnap.kdns.fr/2026/04/05/xss/">
 <meta property="og:site_name" content="Zomnap的博客">
 <meta property="og:description" content="前置知识-XSS漏洞首先xss漏洞是攻击者通过在输入框内拼接，插入，执行恶意js代码导致的由前端逐渐转向后端的前端漏洞 而常见的注入点有：文件上传 json的callback函数 富文本编辑器 用户名 用户资料&#x2F;信息 评论区&#x2F;聊天框 备注 后台配置项(网站标题 Logo链接等) 搜索框(以下是”xxx”的搜索结果) 报错(“xxx”输入存在错误&#x2F;敏感字符)，而文件上传">
 <meta property="og:locale" content="zh_CN">
@@ -106,14 +106,48 @@
     (function() {
       var canonicalOrigin = "https://zomnap.kdns.fr";
       var redirectHosts = ["zomnap.github.io"];
-      var currentHost = window.location.hostname.toLowerCase();
-      if (!redirectHosts.includes(currentHost)) return;
+      var currentUrl = new URL(window.location.href);
+      var currentHost = currentUrl.hostname.toLowerCase();
 
+      function normalizePathname(pathname) {
+        var normalized = pathname || "/";
+
+        normalized = normalized
+          .split("/")
+          .map(function(segment) {
+            if (!segment) return "";
+            try {
+              return encodeURIComponent(decodeURIComponent(segment));
+            } catch (error) {
+              return encodeURIComponent(segment);
+            }
+          })
+          .join("/");
+
+        normalized = normalized.replace(/\\/g, "/");
+        normalized = normalized.replace(/\/index\.html$/i, "/");
+
+        if (
+          normalized !== "/" &&
+          !/\.[^/]+$/i.test(normalized) &&
+          !normalized.endsWith("/")
+        ) {
+          normalized += "/";
+        }
+
+        normalized = normalized.replace(/\/+/g, "/");
+        return normalized || "/";
+      }
+
+      var normalizedPathname = normalizePathname(currentUrl.pathname);
+      var targetOrigin = redirectHosts.includes(currentHost)
+        ? canonicalOrigin
+        : currentUrl.origin;
       var target =
-        canonicalOrigin +
-        window.location.pathname +
-        window.location.search +
-        window.location.hash;
+        targetOrigin +
+        normalizedPathname +
+        currentUrl.search +
+        currentUrl.hash;
       if (window.location.href !== target) {
         window.location.replace(target);
       }
@@ -856,7 +890,7 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mr6cyi7r"></script>
+  <script src="/js/footer.js?v=mr6dpee6"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>

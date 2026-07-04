@@ -22,7 +22,7 @@
     <meta name="description" content="XXE前置知识(部分资料借鉴于XXE漏洞学习 - Suzen)​	XXE 是一种 XML 外部实体注入漏洞。当应用程序解析用户提交的 XML 时，如果启用了外部实体解析，并且没有正确过滤或限制，攻击者可以通过定义外部实体来读取服务器本地文件发起 SSRF 等。 1.基础的xxe利用方式基础文件读取（有回显） 原理：通过定义外部实体引用本地文件（如 &#x2F;etc&#x2F;passwd），当">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记录一次有关XXE漏洞的学习及有关svg的xss和xxe漏洞">
-<meta property="og:url" content="https://zomnap.kdns.fr/2026/04/07/xxe/index.html">
+<meta property="og:url" content="https://zomnap.kdns.fr/2026/04/07/xxe/">
 <meta property="og:site_name" content="Zomnap的博客">
 <meta property="og:description" content="XXE前置知识(部分资料借鉴于XXE漏洞学习 - Suzen)​	XXE 是一种 XML 外部实体注入漏洞。当应用程序解析用户提交的 XML 时，如果启用了外部实体解析，并且没有正确过滤或限制，攻击者可以通过定义外部实体来读取服务器本地文件发起 SSRF 等。 1.基础的xxe利用方式基础文件读取（有回显） 原理：通过定义外部实体引用本地文件（如 &#x2F;etc&#x2F;passwd），当">
 <meta property="og:locale" content="zh_CN">
@@ -106,14 +106,48 @@
     (function() {
       var canonicalOrigin = "https://zomnap.kdns.fr";
       var redirectHosts = ["zomnap.github.io"];
-      var currentHost = window.location.hostname.toLowerCase();
-      if (!redirectHosts.includes(currentHost)) return;
+      var currentUrl = new URL(window.location.href);
+      var currentHost = currentUrl.hostname.toLowerCase();
 
+      function normalizePathname(pathname) {
+        var normalized = pathname || "/";
+
+        normalized = normalized
+          .split("/")
+          .map(function(segment) {
+            if (!segment) return "";
+            try {
+              return encodeURIComponent(decodeURIComponent(segment));
+            } catch (error) {
+              return encodeURIComponent(segment);
+            }
+          })
+          .join("/");
+
+        normalized = normalized.replace(/\\/g, "/");
+        normalized = normalized.replace(/\/index\.html$/i, "/");
+
+        if (
+          normalized !== "/" &&
+          !/\.[^/]+$/i.test(normalized) &&
+          !normalized.endsWith("/")
+        ) {
+          normalized += "/";
+        }
+
+        normalized = normalized.replace(/\/+/g, "/");
+        return normalized || "/";
+      }
+
+      var normalizedPathname = normalizePathname(currentUrl.pathname);
+      var targetOrigin = redirectHosts.includes(currentHost)
+        ? canonicalOrigin
+        : currentUrl.origin;
       var target =
-        canonicalOrigin +
-        window.location.pathname +
-        window.location.search +
-        window.location.hash;
+        targetOrigin +
+        normalizedPathname +
+        currentUrl.search +
+        currentUrl.hash;
       if (window.location.href !== target) {
         window.location.replace(target);
       }
@@ -940,7 +974,7 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mr6cyi7r"></script>
+  <script src="/js/footer.js?v=mr6dpee6"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>

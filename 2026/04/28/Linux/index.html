@@ -22,7 +22,7 @@
     <meta name="description" content="提权查询命令常见的可以利用sudo提权的命令  nmap, vim, vi, nano, bash, less, more, cp, find, git, wget, cat, apt, zip, xxd, time, taskset, sed, pip, ed, tmux, scp, perl, awk, man, env, ftp, apache2, ash, base64, cpulimit">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux">
-<meta property="og:url" content="https://zomnap.kdns.fr/2026/04/28/Linux/index.html">
+<meta property="og:url" content="https://zomnap.kdns.fr/2026/04/28/Linux/">
 <meta property="og:site_name" content="Zomnap的博客">
 <meta property="og:description" content="提权查询命令常见的可以利用sudo提权的命令  nmap, vim, vi, nano, bash, less, more, cp, find, git, wget, cat, apt, zip, xxd, time, taskset, sed, pip, ed, tmux, scp, perl, awk, man, env, ftp, apache2, ash, base64, cpulimit">
 <meta property="og:locale" content="zh_CN">
@@ -114,14 +114,48 @@
     (function() {
       var canonicalOrigin = "https://zomnap.kdns.fr";
       var redirectHosts = ["zomnap.github.io"];
-      var currentHost = window.location.hostname.toLowerCase();
-      if (!redirectHosts.includes(currentHost)) return;
+      var currentUrl = new URL(window.location.href);
+      var currentHost = currentUrl.hostname.toLowerCase();
 
+      function normalizePathname(pathname) {
+        var normalized = pathname || "/";
+
+        normalized = normalized
+          .split("/")
+          .map(function(segment) {
+            if (!segment) return "";
+            try {
+              return encodeURIComponent(decodeURIComponent(segment));
+            } catch (error) {
+              return encodeURIComponent(segment);
+            }
+          })
+          .join("/");
+
+        normalized = normalized.replace(/\\/g, "/");
+        normalized = normalized.replace(/\/index\.html$/i, "/");
+
+        if (
+          normalized !== "/" &&
+          !/\.[^/]+$/i.test(normalized) &&
+          !normalized.endsWith("/")
+        ) {
+          normalized += "/";
+        }
+
+        normalized = normalized.replace(/\/+/g, "/");
+        return normalized || "/";
+      }
+
+      var normalizedPathname = normalizePathname(currentUrl.pathname);
+      var targetOrigin = redirectHosts.includes(currentHost)
+        ? canonicalOrigin
+        : currentUrl.origin;
       var target =
-        canonicalOrigin +
-        window.location.pathname +
-        window.location.search +
-        window.location.hash;
+        targetOrigin +
+        normalizedPathname +
+        currentUrl.search +
+        currentUrl.hash;
       if (window.location.href !== target) {
         window.location.replace(target);
       }
@@ -948,7 +982,7 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mr6cyi7r"></script>
+  <script src="/js/footer.js?v=mr6dpee6"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>

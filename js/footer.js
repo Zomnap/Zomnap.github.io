@@ -16,30 +16,27 @@ function updateRuntime() {
 setInterval(updateRuntime, 1000);
 updateRuntime();
 
-function enforceMinimumNumber(element, minimum) {
-  if (!element || !minimum) return;
+function attachOffsetCounter(element, baseline) {
+  if (!element || !window.MutationObserver) return;
 
-  let updating = false;
-  const apply = () => {
-    if (updating) return;
+  let applying = false;
+  new MutationObserver(() => {
+    if (applying) return;
 
-    const value = Number.parseInt(element.textContent.replace(/[^\d]/g, ""), 10);
-    if (!Number.isFinite(value) || value < minimum) {
-      updating = true;
-      element.textContent = String(minimum);
-      updating = false;
-    }
-  };
+    const rawValue = Number.parseInt(
+      element.textContent.replace(/[^\d]/g, ""),
+      10
+    );
+    if (!Number.isFinite(rawValue)) return;
 
-  apply();
-
-  if (window.MutationObserver) {
-    new MutationObserver(apply).observe(element, {
-      childList: true,
-      characterData: true,
-      subtree: true,
-    });
-  }
+    applying = true;
+    element.textContent = String(baseline + rawValue);
+    applying = false;
+  }).observe(element, {
+    childList: true,
+    characterData: true,
+    subtree: true,
+  });
 }
 
 function loadVisitorStats() {
@@ -60,8 +57,8 @@ function loadVisitorStats() {
     const siteUvBase = Number.parseInt(siteUv && siteUv.textContent, 10) || 0;
     const sitePvBase = Number.parseInt(sitePv && sitePv.textContent, 10) || 0;
 
-    enforceMinimumNumber(siteUv, siteUvBase);
-    enforceMinimumNumber(sitePv, sitePvBase);
+    attachOffsetCounter(siteUv, siteUvBase);
+    attachOffsetCounter(sitePv, sitePvBase);
   }
 
   const script = document.createElement("script");

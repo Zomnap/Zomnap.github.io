@@ -22,7 +22,7 @@
     <meta name="description" content="放开我的变量首先这道题肯定已经被刷爆了，所以就来谈谈个人做题感想 按照常规做ctf题规，肯定扫了一遍目录后就知道是robots.txt造成的目录泄露了 随后，看到题目中的后门中能直接连上蚁剑，看到根目录有flag文件，但是打开是空的，所以故认为是提权漏洞 但不得不多说一句，这道题目打反弹shell的话应该也是做的出来的（毕竟给了eval代码端口） 回到正题，先看看start.sh： 1234567">
 <meta property="og:type" content="article">
 <meta property="og:title" content="0xgame2025-Week3 Web全解复现">
-<meta property="og:url" content="https://zomnap.kdns.fr/2026/06/01/0xgame2025/index.html">
+<meta property="og:url" content="https://zomnap.kdns.fr/2026/06/01/0xgame2025/">
 <meta property="og:site_name" content="Zomnap的博客">
 <meta property="og:description" content="放开我的变量首先这道题肯定已经被刷爆了，所以就来谈谈个人做题感想 按照常规做ctf题规，肯定扫了一遍目录后就知道是robots.txt造成的目录泄露了 随后，看到题目中的后门中能直接连上蚁剑，看到根目录有flag文件，但是打开是空的，所以故认为是提权漏洞 但不得不多说一句，这道题目打反弹shell的话应该也是做的出来的（毕竟给了eval代码端口） 回到正题，先看看start.sh： 1234567">
 <meta property="og:locale" content="zh_CN">
@@ -106,14 +106,48 @@
     (function() {
       var canonicalOrigin = "https://zomnap.kdns.fr";
       var redirectHosts = ["zomnap.github.io"];
-      var currentHost = window.location.hostname.toLowerCase();
-      if (!redirectHosts.includes(currentHost)) return;
+      var currentUrl = new URL(window.location.href);
+      var currentHost = currentUrl.hostname.toLowerCase();
 
+      function normalizePathname(pathname) {
+        var normalized = pathname || "/";
+
+        normalized = normalized
+          .split("/")
+          .map(function(segment) {
+            if (!segment) return "";
+            try {
+              return encodeURIComponent(decodeURIComponent(segment));
+            } catch (error) {
+              return encodeURIComponent(segment);
+            }
+          })
+          .join("/");
+
+        normalized = normalized.replace(/\\/g, "/");
+        normalized = normalized.replace(/\/index\.html$/i, "/");
+
+        if (
+          normalized !== "/" &&
+          !/\.[^/]+$/i.test(normalized) &&
+          !normalized.endsWith("/")
+        ) {
+          normalized += "/";
+        }
+
+        normalized = normalized.replace(/\/+/g, "/");
+        return normalized || "/";
+      }
+
+      var normalizedPathname = normalizePathname(currentUrl.pathname);
+      var targetOrigin = redirectHosts.includes(currentHost)
+        ? canonicalOrigin
+        : currentUrl.origin;
       var target =
-        canonicalOrigin +
-        window.location.pathname +
-        window.location.search +
-        window.location.hash;
+        targetOrigin +
+        normalizedPathname +
+        currentUrl.search +
+        currentUrl.hash;
       if (window.location.href !== target) {
         window.location.replace(target);
       }
@@ -924,7 +958,7 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mr6cyi7r"></script>
+  <script src="/js/footer.js?v=mr6dpee6"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>
