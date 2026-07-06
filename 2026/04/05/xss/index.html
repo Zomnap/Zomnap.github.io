@@ -22,17 +22,17 @@
     <meta name="description" content="前置知识-XSS漏洞首先xss漏洞是攻击者通过在输入框内拼接，插入，执行恶意js代码导致的由前端逐渐转向后端的前端漏洞 而常见的注入点有：文件上传 json的callback函数 富文本编辑器 用户名 用户资料&#x2F;信息 评论区&#x2F;聊天框 备注 后台配置项(网站标题 Logo链接等) 搜索框(以下是”xxx”的搜索结果) 报错(“xxx”输入存在错误&#x2F;敏感字符)，而文件上传">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记一次xss漏洞的学习和好靶场的刷题日志">
-<meta property="og:url" content="https://zomnap.github.io/2026/04/05/xss/">
+<meta property="og:url" content="https://zomnap.top/2026/04/05/xss/">
 <meta property="og:site_name" content="Zomnap的博客">
 <meta property="og:description" content="前置知识-XSS漏洞首先xss漏洞是攻击者通过在输入框内拼接，插入，执行恶意js代码导致的由前端逐渐转向后端的前端漏洞 而常见的注入点有：文件上传 json的callback函数 富文本编辑器 用户名 用户资料&#x2F;信息 评论区&#x2F;聊天框 备注 后台配置项(网站标题 Logo链接等) 搜索框(以下是”xxx”的搜索结果) 报错(“xxx”输入存在错误&#x2F;敏感字符)，而文件上传">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://zomnap.github.io/img/6.jpeg">
+<meta property="og:image" content="https://zomnap.top/img/6.jpeg">
 <meta property="article:published_time" content="2026-04-05T02:09:01.000Z">
 <meta property="article:modified_time" content="2026-06-07T08:58:13.438Z">
 <meta property="article:author" content="Zomnap">
 <meta property="article:tag" content="XSS漏洞">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://zomnap.github.io/img/6.jpeg">
+<meta name="twitter:image" content="https://zomnap.top/img/6.jpeg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -76,7 +76,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"zomnap.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"zomnap.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -104,7 +104,7 @@
   <link rel="stylesheet" href="/css/custom.css">
   <script>
     (function() {
-      var canonicalOrigin = "https://zomnap.github.io";
+      var canonicalOrigin = "https://zomnap.top";
       var redirectHosts = ["zomnap.kdns.fr"];
       var currentUrl = new URL(window.location.href);
       var currentHost = currentUrl.hostname.toLowerCase();
@@ -508,7 +508,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>记一次xss漏洞的学习和好靶场的刷题日志</div>
-      <div>https://zomnap.github.io/2026/04/05/xss/</div>
+      <div>https://zomnap.top/2026/04/05/xss/</div>
     </div>
     <div class="license-meta">
       
@@ -873,7 +873,7 @@
       <div class="footer-line">
         <span id="runtime"></span>
       </div>
-      <div class="footer-line footer-statistics" data-site-hosts="zomnap.github.io,zomnap.kdns.fr">
+      <div class="footer-line footer-statistics" data-site-hosts="zomnap.top,zomnap.kdns.fr">
         <span id="busuanzi_container_site_uv">
           总访客 <strong id="busuanzi_value_site_uv">711</strong> 人
         </span>
@@ -890,7 +890,7 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mr8rz6jy"></script>
+  <script src="/js/footer.js?v=mr8s8poc"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>
