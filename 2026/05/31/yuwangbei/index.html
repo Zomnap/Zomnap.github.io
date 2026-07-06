@@ -22,17 +22,17 @@
     <meta name="description" content="前言这个比赛怎么说呢。。。有点恶心，pwn题环境一直是崩的打不开，web题简单的要命，misc题净出些老题，只能说拉完了 WEB-PHP_Payment开题，首先看到是一个购物界面，经典逻辑漏洞题，题目又说道要用base64的形式传参获得优惠券来增长余额，所以先看到题目附件，发现存在php反序列化接口  随后跳转到moudle.php，可以看到，先是创建了一个PromoManager对象，然后再_">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2026御网杯-web全解">
-<meta property="og:url" content="https://zomnap.kdns.fr/2026/05/31/yuwangbei/">
+<meta property="og:url" content="https://zomnap.top/2026/05/31/yuwangbei/">
 <meta property="og:site_name" content="Zomnap的博客">
 <meta property="og:description" content="前言这个比赛怎么说呢。。。有点恶心，pwn题环境一直是崩的打不开，web题简单的要命，misc题净出些老题，只能说拉完了 WEB-PHP_Payment开题，首先看到是一个购物界面，经典逻辑漏洞题，题目又说道要用base64的形式传参获得优惠券来增长余额，所以先看到题目附件，发现存在php反序列化接口  随后跳转到moudle.php，可以看到，先是创建了一个PromoManager对象，然后再_">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://zomnap.kdns.fr/img/12.jpg">
+<meta property="og:image" content="https://zomnap.top/img/12.jpg">
 <meta property="article:published_time" content="2026-05-31T00:45:55.000Z">
 <meta property="article:modified_time" content="2026-05-31T01:53:45.055Z">
 <meta property="article:author" content="Zomnap">
 <meta property="article:tag" content="wp&#x2F;sum">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://zomnap.kdns.fr/img/12.jpg">
+<meta name="twitter:image" content="https://zomnap.top/img/12.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -76,7 +76,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"zomnap.kdns.fr","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"zomnap.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -104,8 +104,8 @@
   <link rel="stylesheet" href="/css/custom.css">
   <script>
     (function() {
-      var canonicalOrigin = "https://zomnap.kdns.fr";
-      var redirectHosts = [];
+      var canonicalOrigin = "https://zomnap.top";
+      var redirectHosts = ["zomnap.kdns.fr"];
       var currentUrl = new URL(window.location.href);
       var currentHost = currentUrl.hostname.toLowerCase();
 
@@ -439,7 +439,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>2026御网杯-web全解</div>
-      <div>https://zomnap.kdns.fr/2026/05/31/yuwangbei/</div>
+      <div>https://zomnap.top/2026/05/31/yuwangbei/</div>
     </div>
     <div class="license-meta">
       
@@ -804,7 +804,7 @@
       <div class="footer-line">
         <span id="runtime"></span>
       </div>
-      <div class="footer-line footer-statistics" data-site-hosts="zomnap.kdns.fr">
+      <div class="footer-line footer-statistics" data-site-hosts="zomnap.top,zomnap.kdns.fr">
         <span id="busuanzi_container_site_uv">
           总访客 <strong id="busuanzi_value_site_uv">711</strong> 人
         </span>
@@ -821,7 +821,7 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mr8qvfer"></script>
+  <script src="/js/footer.js?v=mr8rs2hl"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>
