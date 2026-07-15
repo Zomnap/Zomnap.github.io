@@ -19,9 +19,13 @@ updateRuntime();
 function attachOffsetCounter(element, baseline) {
   if (!element || !window.MutationObserver) return;
 
-  let applying = false;
-  new MutationObserver(() => {
-    if (applying) return;
+  const mutationConfig = {
+    childList: true,
+    characterData: true,
+    subtree: true,
+  };
+
+  const observer = new MutationObserver(() => {
 
     const rawValue = Number.parseInt(
       element.textContent.replace(/[^\d]/g, ""),
@@ -29,14 +33,12 @@ function attachOffsetCounter(element, baseline) {
     );
     if (!Number.isFinite(rawValue)) return;
 
-    applying = true;
+    observer.disconnect();
     element.textContent = String(baseline + rawValue);
-    applying = false;
-  }).observe(element, {
-    childList: true,
-    characterData: true,
-    subtree: true,
+    observer.observe(element, mutationConfig);
   });
+
+  observer.observe(element, mutationConfig);
 }
 
 function loadVisitorStats() {
