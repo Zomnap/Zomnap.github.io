@@ -395,13 +395,13 @@
     
     <tags>
       
+      <tag>wp</tag>
+      
       <tag>SSRF漏洞</tag>
       
       <tag>Pickle反序列化</tag>
       
       <tag>jwt密钥伪造</tag>
-      
-      <tag>wp/sum</tag>
       
     </tags>
     
