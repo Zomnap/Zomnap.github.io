@@ -63,7 +63,7 @@
     
     <categories>
       
-      <category>算是个人随笔吧</category>
+      <category>个人小记</category>
       
     </categories>
     
@@ -113,7 +113,7 @@
     
     <categories>
       
-      <category>-日常刷题</category>
+      <category>日常刷题</category>
       
     </categories>
     
@@ -395,13 +395,7 @@
     
     <tags>
       
-      <tag>wp</tag>
-      
-      <tag>SSRF漏洞</tag>
-      
-      <tag>Pickle反序列化</tag>
-      
-      <tag>jwt密钥伪造</tag>
+      <tag>-SSRF -pickle反序列化 -jwt密钥伪造 -wp</tag>
       
     </tags>
     
