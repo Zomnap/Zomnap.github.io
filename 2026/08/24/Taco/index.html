@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zomnap.top/img/20.jpg">
 <meta property="article:published_time" content="2026-08-24T03:12:53.000Z">
-<meta property="article:modified_time" content="2026-08-24T05:04:55.000Z">
+<meta property="article:modified_time" content="2026-08-24T07:50:30.893Z">
 <meta property="article:author" content="Zomnap">
 <meta property="article:tag" content="pickle反序列化">
 <meta name="twitter:card" content="summary_large_image">
@@ -367,7 +367,7 @@
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为上上周打htb的pickle反序列化给我打破防了，所以一气之下写了个自动化pickle反序列化工具，支持自定义文件后缀，由于本人才学python，所以只写了个gen的框架，其他的webui啥的都交给ai了（顺便看看豆包和kimi谁的work牛逼），结果豆包还是牛逼点，免费的kimi真的拉完了</p>
 <p>本工具基于python 3.10+开发，支持自定义waf绕过、多编码输出、字节码分析和利用cve实时情报实时更新最新payload<br>通过nvd api配置来实时更新cve<br>当前开发环境是python 3.14.6；项目依赖为flask 3.0+和requests 2.31+；代码按python 3.10+作为支持基线，pickle协议界面支持0到5</p>
 <p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/Zomnap/Taco">https://github.com/Zomnap/Taco</a></p>
-<h2 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">先安装支持<br>pip install -r requirements.txt<br>然后再启动web服务<br>py app.py<br>最后点击start.bat启动即可<br></code></pre></td></tr></table></figure>
+<h2 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">先安装支持<br>pip install -r requirements.txt<br>然后再启动web服务<br>py app.py<br>最后点击start.bat启动即可<br>在点开后会提示输入nvd的api以查询实时有关cve，如果没有的话直接回车即可<br></code></pre></td></tr></table></figure>
 
 <p><img src="/img/taco/1.png" srcset="/img/loading.gif" lazyload></p>
 <p>该项目结构</p>
@@ -950,7 +950,7 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mt6xplwq"></script>
+  <script src="/js/footer.js?v=mt6xsexk"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>
