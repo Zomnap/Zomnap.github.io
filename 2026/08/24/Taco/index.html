@@ -19,26 +19,26 @@
   <meta name="author" content="Zomnap">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前言这个比赛怎么说呢。。。有点恶心，pwn题环境一直是崩的打不开，web题简单的要命，misc题净出些老题，只能说拉完了 WEB-PHP_Payment开题，首先看到是一个购物界面，经典逻辑漏洞题，题目又说道要用base64的形式传参获得优惠券来增长余额，所以先看到题目附件，发现存在php反序列化接口  随后跳转到moudle.php，可以看到，先是创建了一个PromoManager对象，然后再_">
+    <meta name="description" content="前言因为上上周打htb的pickle反序列化给我打破防了，所以一气之下写了个自动化pickle反序列化工具，支持自定义文件后缀，由于本人才学python，所以只写了个gen的框架，其他的webui啥的都交给ai了（顺便看看豆包和kimi谁的work牛逼），结果豆包还是牛逼点，免费的kimi真的拉完了 本工具基于python 3.10+开发，支持自定义waf绕过、多编码输出、字节码分析和利用cve实">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2026御网杯-web全解">
-<meta property="og:url" content="https://zomnap.top/2026/05/31/yuwangbei/">
+<meta property="og:title" content="Taco，一个自动化生成pickle反序列化的工具">
+<meta property="og:url" content="https://zomnap.top/2026/08/24/Taco/">
 <meta property="og:site_name" content="Zomnap的博客">
-<meta property="og:description" content="前言这个比赛怎么说呢。。。有点恶心，pwn题环境一直是崩的打不开，web题简单的要命，misc题净出些老题，只能说拉完了 WEB-PHP_Payment开题，首先看到是一个购物界面，经典逻辑漏洞题，题目又说道要用base64的形式传参获得优惠券来增长余额，所以先看到题目附件，发现存在php反序列化接口  随后跳转到moudle.php，可以看到，先是创建了一个PromoManager对象，然后再_">
+<meta property="og:description" content="前言因为上上周打htb的pickle反序列化给我打破防了，所以一气之下写了个自动化pickle反序列化工具，支持自定义文件后缀，由于本人才学python，所以只写了个gen的框架，其他的webui啥的都交给ai了（顺便看看豆包和kimi谁的work牛逼），结果豆包还是牛逼点，免费的kimi真的拉完了 本工具基于python 3.10+开发，支持自定义waf绕过、多编码输出、字节码分析和利用cve实">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://zomnap.top/img/12.jpg">
-<meta property="article:published_time" content="2026-05-31T00:45:55.000Z">
-<meta property="article:modified_time" content="2026-08-23T15:48:22.214Z">
+<meta property="og:image" content="https://zomnap.top/img/20.jpg">
+<meta property="article:published_time" content="2026-08-24T03:12:53.000Z">
+<meta property="article:modified_time" content="2026-08-24T05:04:55.000Z">
 <meta property="article:author" content="Zomnap">
-<meta property="article:tag" content="wp">
+<meta property="article:tag" content="pickle反序列化">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://zomnap.top/img/12.jpg">
+<meta name="twitter:image" content="https://zomnap.top/img/20.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>2026御网杯-web全解 - Zomnap的博客</title>
+  <title>Taco，一个自动化生成pickle反序列化的工具 - Zomnap的博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -262,13 +262,13 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('/img/12.jpg') no-repeat center center; background-size: cover;">
+     style="background: url('/img/20.jpg') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.5)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="2026御网杯-web全解"></span>
+            <span id="subtitle" data-typed-text="Taco，一个自动化生成pickle反序列化的工具"></span>
           
         </div>
 
@@ -279,8 +279,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-31 08:45" pubdate>
-          2026年5月31日 早上
+        <time datetime="2026-08-24 11:12" pubdate>
+          2026年8月24日 上午
         </time>
       </span>
     
@@ -291,7 +291,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          482 字
+          1k 字
         
       </span>
     
@@ -302,7 +302,7 @@
         
         
         
-          5 分钟
+          9 分钟
         
       </span>
     
@@ -351,12 +351,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">2026御网杯-web全解</h1>
+            <h1 id="seo-header">Taco，一个自动化生成pickle反序列化的工具</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年8月23日 晚上
+                    本文最后更新于 2026年8月24日 下午
                   
                 
               </p>
@@ -364,35 +364,170 @@
             
               <div class="markdown-body">
                 
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这个比赛怎么说呢。。。有点恶心，pwn题环境一直是崩的打不开，web题简单的要命，misc题净出些老题，只能说拉完了</p>
-<h2 id="WEB-PHP-Payment"><a href="#WEB-PHP-Payment" class="headerlink" title="WEB-PHP_Payment"></a>WEB-PHP_Payment</h2><p>开题，首先看到是一个购物界面，经典逻辑漏洞题，题目又说道要用base64的形式传参获得优惠券来增长余额，所以先看到题目附件，发现存在php反序列化接口</p>
-<p><img src="/img/yuwangbei/1.png" srcset="/img/loading.gif" lazyload></p>
-<p>随后跳转到moudle.php，可以看到，先是创建了一个PromoManager对象，然后再__construct调用传入设定好的余额</p>
-<p><img src="/img/yuwangbei/2.png" srcset="/img/loading.gif" lazyload></p>
-<p>链子很简单，unserialize()-&gt;PromoManager对象生成-&gt;promo_credit-&gt;__destruct()</p>
-<p>搓一个简单的poc</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PromoManager</span></span>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-variable">$promo_credit</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-variable">$promo_code</span>;<br>&#125;<br><br><span class="hljs-variable">$promo</span>=<span class="hljs-keyword">new</span> <span class="hljs-title class_">PromoManager</span>();<br><span class="hljs-variable">$promo</span>-&gt;promo_credit=<span class="hljs-number">100000</span>;<br><span class="hljs-variable">$promo</span>-&gt;promo_code=<span class="hljs-string">&quot;pwn!&quot;</span>;<br><span class="hljs-variable">$serialized</span>=<span class="hljs-title function_ invoke__">serialize</span>(<span class="hljs-variable">$promo</span>);<br><span class="hljs-keyword">echo</span> <span class="hljs-variable">$serialized</span>;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为上上周打htb的pickle反序列化给我打破防了，所以一气之下写了个自动化pickle反序列化工具，支持自定义文件后缀，由于本人才学python，所以只写了个gen的框架，其他的webui啥的都交给ai了（顺便看看豆包和kimi谁的work牛逼），结果豆包还是牛逼点，免费的kimi真的拉完了</p>
+<p>本工具基于python 3.10+开发，支持自定义waf绕过、多编码输出、字节码分析和利用cve实时情报实时更新最新payload<br>通过nvd api配置来实时更新cve<br>当前开发环境是python 3.14.6；项目依赖为flask 3.0+和requests 2.31+；代码按python 3.10+作为支持基线，pickle协议界面支持0到5</p>
+<p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/Zomnap/Taco">https://github.com/Zomnap/Taco</a></p>
+<h2 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">先安装支持<br>pip install -r requirements.txt<br>然后再启动web服务<br>py app.py<br>最后点击start.bat启动即可<br></code></pre></td></tr></table></figure>
 
-<p><img src="/img/yuwangbei/3.png" srcset="/img/loading.gif" lazyload></p>
-<p>base64转码后上传买flag就可以了</p>
-<p>但是这里有一个小坑，购买flag的时候得抓相应包里的flag，因为代码是这样写的（</p>
-<p><img src="/img/yuwangbei/4.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="WEB-Snake-Game"><a href="#WEB-Snake-Game" class="headerlink" title="WEB-Snake_Game"></a>WEB-Snake_Game</h2><p>典中典，前端js逆向，来看到这串代码：</p>
-<p><img src="/img/yuwangbei/5.png" srcset="/img/loading.gif" lazyload></p>
-<p>发现可以通过创建一个新的index对象修改score来快速改分数</p>
-<p>于是构造</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> fd=<span class="hljs-keyword">new</span> <span class="hljs-title class_">FormData</span>();<br>fd.<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;score&#x27;</span>,<span class="hljs-number">300</span>);<br><span class="hljs-title function_">fetch</span>(<span class="hljs-string">&#x27;index.php&#x27;</span>,&#123;<span class="hljs-attr">method</span>:<span class="hljs-string">&#x27;POST&#x27;</span>,<span class="hljs-attr">body</span>:fd&#125;)<br>.<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">r</span>=&gt;</span>r.<span class="hljs-title function_">json</span>())<br>.<span class="hljs-title function_">then</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">log</span>);<br></code></pre></td></tr></table></figure>
+<p><img src="/img/taco/1.png" srcset="/img/loading.gif" lazyload></p>
+<p>该项目结构</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">Taco/<br>├── app.py                  <span class="hljs-comment">#Flask 主程序+API 路由</span><br>├── requirements.txt<br>├── generator/<br>│   ├── __init__.py<br>│   ├── payloads.py         <span class="hljs-comment">#Payload 生成引擎（12个gadget链）</span><br>│   ├── waf_bypass.py       <span class="hljs-comment">#WAF绕过引擎（6种绕过方案）</span><br>│   └── formats.py          <span class="hljs-comment">#Raw/Gzip/Zip/PDF/自定义后缀封装</span><br>├── cve/<br>│   ├── __init__.py<br>│   └── fetcher.py          <span class="hljs-comment">#NVD CVE获取+本地缓存</span><br>├── templates/<br>│   └── index.html          <span class="hljs-comment">#前端页面</span><br>├── static/<br>│   ├── style.css           <span class="hljs-comment">#暗色主题样式</span><br>│   └── app.js              <span class="hljs-comment">#前端交互逻辑</span><br>└── cache/                  <span class="hljs-comment">#CVE缓存（自动创建）</span><br></code></pre></td></tr></table></figure>
 
-<p>输入到前端console后拿到flag</p>
-<p><img src="/img/yuwangbei/6.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="Web-oa运维系统"><a href="#Web-oa运维系统" class="headerlink" title="Web-oa运维系统"></a>Web-oa运维系统</h2><p>​	神人比赛结束后不给环境复现，就谈谈个人思路	</p>
-<p>​	首先看到有一个?moudle&#x3D;，且题目提示可以目录穿越，当我们访问“关于”页面的时候就会请求&#x2F;?module&#x3D;about.php</p>
-<p>所以可以爆字典请求&#x2F;?module&#x3D;&#x2F;flag.txt即可拿到flag</p>
-<h2 id="Web-ssti"><a href="#Web-ssti" class="headerlink" title="Web-ssti"></a>Web-ssti</h2><p>​	首先现在附件的初始化数据库脚本中拿到默登录的管理员账号密码（环境又关了）</p>
-<p><img src="/img/yuwangbei/7.png" srcset="/img/loading.gif" lazyload></p>
-<p>​	然后再fenjing一把梭：{“profile_id”:1,”data”:{“state”:”AUDIT_PENDING”,”income”:0,”deductions”:0,”custom_footer”:”“}}</p>
-<p>拿到密钥secret_tax_key_2026_xoxo</p>
-<p>随后伪造管理员登录session后登进系统里进入金库界面拿到flag</p>
+<p>接下来是一段README</p>
+<h2 id="Payload-模板列表"><a href="#Payload-模板列表" class="headerlink" title="Payload 模板列表"></a>Payload 模板列表</h2><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>rce_system</code></td>
+<td>RCE - os.system</td>
+<td>命令执行，无回显</td>
+</tr>
+<tr>
+<td><code>rce_popen</code></td>
+<td>RCE - subprocess.Popen</td>
+<td>shell&#x3D;True 执行</td>
+</tr>
+<tr>
+<td><code>rce_popen_capture</code></td>
+<td>RCE - check_output</td>
+<td>执行并捕获输出</td>
+</tr>
+<tr>
+<td><code>rce_popen_read</code></td>
+<td>RCE - os.popen</td>
+<td>可读取输出</td>
+</tr>
+<tr>
+<td><code>rce_eval</code></td>
+<td>RCE - eval</td>
+<td>Python 表达式执行</td>
+</tr>
+<tr>
+<td><code>rce_exec</code></td>
+<td>RCE - exec</td>
+<td>任意 Python 代码</td>
+</tr>
+<tr>
+<td><code>file_read</code></td>
+<td>文件读取</td>
+<td>open() 读文件</td>
+</tr>
+<tr>
+<td><code>file_write</code></td>
+<td>文件写入</td>
+<td>写文件</td>
+</tr>
+<tr>
+<td><code>reverse_shell</code></td>
+<td>反向 Shell - bash</td>
+<td>bash -i 反弹</td>
+</tr>
+<tr>
+<td><code>reverse_shell_py</code></td>
+<td>反向 Shell - Python</td>
+<td>纯 Python 反弹</td>
+</tr>
+<tr>
+<td><code>bypass_getattr</code></td>
+<td>绕过 - getattr</td>
+<td>动态调用绕过检测</td>
+</tr>
+<tr>
+<td><code>bypass_builtins</code></td>
+<td>绕过 - builtins</td>
+<td>沙箱内泄漏 exec</td>
+</tr>
+</tbody></table>
+<h2 id="WAF-绕过方案"><a href="#WAF-绕过方案" class="headerlink" title="WAF 绕过方案"></a>WAF 绕过方案</h2><p>输入被过滤的字符后，工具自动生成以下方案并按过滤命中数排序：</p>
+<ol>
+<li><strong>Base64 编码包装</strong> — payload 编码后用 eval 包装</li>
+<li><strong>Hex 编码包装</strong> — 同上，用 hex 编码</li>
+<li><strong>chr() 拼接绕过</strong> — 被过滤字符用 chr(ord) 动态构造</li>
+<li><strong>无引号 Payload</strong> — 完全避免单双引号</li>
+<li><strong>Protocol 0 文本格式</strong> — 纯文本可读格式，绕过二进制特征</li>
+<li><strong>URL 编码</strong> — 适用于 HTTP 参数注入</li>
+</ol>
+<h3 id="WAF-规则输入格式"><a href="#WAF-规则输入格式" class="headerlink" title="WAF 规则输入格式"></a>WAF 规则输入格式</h3><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs nix">&#x27;, <span class="hljs-string">&quot;, <span class="hljs-char escape_">\n</span>, <span class="hljs-char escape_">\r</span>, /, ;        #逗号/空格分隔</span><br><span class="hljs-string">abc                       #直接列出字符</span><br><span class="hljs-string"><span class="hljs-char escape_">\x</span>00, <span class="hljs-char escape_">\t</span>                  #支持十六进制和转义</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="API-接口"><a href="#API-接口" class="headerlink" title="API 接口"></a>API 接口</h2><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>路径</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td><code>/api/templates</code></td>
+<td>获取所有模板</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/generate</code></td>
+<td>生成单个 payload</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/bypass</code></td>
+<td>WAF 绕过生成</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/generate_all</code></td>
+<td>批量生成全部模板</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/disasm</code></td>
+<td>字节码反汇编</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/cves</code></td>
+<td>获取 CVE 列表</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/cve_summary</code></td>
+<td>CVE 统计摘要</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/formats</code></td>
+<td>可用文件封装格式</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/package</code></td>
+<td>生成并封装文件，返回 Base64</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/records</code></td>
+<td>查看本地 Payload 记录，可用 <code>cve_id</code> 筛选</td>
+</tr>
+</tbody></table>
+<h3 id="生成-Payload-示例"><a href="#生成-Payload-示例" class="headerlink" title="生成 Payload 示例"></a>生成 Payload 示例</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -X POST http://127.0.0.1:5001/api/generate \<br>  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \<br>  -d <span class="hljs-string">&#x27;&#123;&quot;template_id&quot;:&quot;rce_system&quot;,&quot;input&quot;:&quot;id&quot;,&quot;protocol&quot;:4&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="文件封装示例"><a href="#文件封装示例" class="headerlink" title="文件封装示例"></a>文件封装示例</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -X POST http://127.0.0.1:5001/api/package \<br>  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \<br>  -d <span class="hljs-string">&#x27;&#123;&quot;template_id&quot;:&quot;rce_system&quot;,&quot;input&quot;:&quot;echo test&quot;,&quot;protocol&quot;:4,&quot;format&quot;:&quot;zip&quot;,&quot;filename&quot;:&quot;sample.zip&quot;,&quot;cve_id&quot;:&quot;CVE-TEST-1&quot;&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p><code>/api/package</code>只在本地生成文件字节并返回 Base64，不会上传或投递到外部目标。PDF格式把 pickle 字节放入 EmbeddedFile 流，是否会被目标程序读取取决于目标的文件处理逻辑。</p>
+<h3 id="WAF-绕过示例"><a href="#WAF-绕过示例" class="headerlink" title="WAF 绕过示例"></a>WAF 绕过示例</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -X POST http://127.0.0.1:5001/api/bypass \<br>  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \<br>  -d <span class="hljs-string">&#x27;&#123;&quot;template_id&quot;:&quot;rce_system&quot;,&quot;input&quot;:&quot;cat /flag&quot;,&quot;waf_filter&quot;:&quot;&#x27;</span>\&#x27;<span class="hljs-string">&#x27;&quot;,&quot;protocol&quot;:4&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="扩展开发"><a href="#扩展开发" class="headerlink" title="扩展开发"></a>扩展开发</h2><h3 id="添加新的-Payload-模板"><a href="#添加新的-Payload-模板" class="headerlink" title="添加新的 Payload 模板"></a>添加新的 Payload 模板</h3><p>在 <code>generator/payloads.py</code> 中：</p>
+<ol>
+<li>定义一个实现 <code>__reduce__</code> 的类</li>
+<li>在 <code>PAYLOAD_TEMPLATES</code> 列表中注册</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyGadget</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, cmd</span>):<br>        <span class="hljs-variable language_">self</span>.cmd = cmd<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__reduce__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">return</span> (some_func, (<span class="hljs-variable language_">self</span>.cmd,))<br><br>PAYLOAD_TEMPLATES.append(&#123;<br>    <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;my_gadget&quot;</span>,<br>    <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;My Gadget&quot;</span>,<br>    <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;说明&quot;</span>,<br>    <span class="hljs-string">&quot;input_type&quot;</span>: <span class="hljs-string">&quot;cmd&quot;</span>,       <span class="hljs-comment">#cmd/code/filepath/filepath_content/ip_port</span><br>    <span class="hljs-string">&quot;input_label&quot;</span>: <span class="hljs-string">&quot;命令&quot;</span>,<br>    <span class="hljs-string">&quot;default_input&quot;</span>: <span class="hljs-string">&quot;id&quot;</span>,<br>    <span class="hljs-string">&quot;class&quot;</span>: MyGadget,<br>    <span class="hljs-string">&quot;tags&quot;</span>: [<span class="hljs-string">&quot;rce&quot;</span>],<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<h3 id="添加新的绕过方案"><a href="#添加新的绕过方案" class="headerlink" title="添加新的绕过方案"></a>添加新的绕过方案</h3><p>在 <code>generator/waf_bypass.py</code> 的 <code>generate_bypass_payloads()</code> 中添加新的 <code>BypassResult</code>。</p>
 
                 
               </div>
@@ -411,7 +546,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E8%B5%9B%E5%90%8Ewp/" class="category-chain-item">赛后wp</a>
+  <a href="/categories/%E4%B8%AA%E4%BA%BA%E5%B0%8F%E8%AE%B0/" class="category-chain-item">个人小记</a>
   
   
 
@@ -426,7 +561,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/wp/" class="print-no-link">#wp</a>
+        <a href="/tags/pickle%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="print-no-link">#pickle反序列化</a>
       
     </div>
   
@@ -438,8 +573,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>2026御网杯-web全解</div>
-      <div>https://zomnap.top/2026/05/31/yuwangbei/</div>
+      <div>Taco，一个自动化生成pickle反序列化的工具</div>
+      <div>https://zomnap.top/2026/08/24/Taco/</div>
     </div>
     <div class="license-meta">
       
@@ -451,7 +586,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年5月31日</div>
+          <div>2026年8月24日</div>
         </div>
       
       
@@ -483,18 +618,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/01/0xgame2025/" title="0xgame2025-Week3 Web全解复现">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">0xgame2025-Week3 Web全解复现</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/05/30/misc-web/" title="一些雑魚web题的wp">
-                        <span class="hidden-mobile">一些雑魚web题的wp</span>
+                      <a href="/2026/08/23/Summer2026/" title="关于我今年的暑假,2026">
+                        <span class="hidden-mobile">关于我今年的暑假,2026</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
