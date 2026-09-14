@@ -21,23 +21,24 @@
   
     <meta name="description" content="前言因为上上周打htb的pickle反序列化给我打破防了，所以一气之下写了个自动化pickle反序列化工具，支持自定义文件后缀，由于本人才学python，所以只写了个gen的框架，其他的webui啥的都交给ai了（顺便看看豆包和kimi谁的work牛逼），结果豆包还是牛逼点，免费的kimi真的拉完了 本工具基于python 3.10+开发，支持自定义waf绕过、多编码输出、字节码分析和利用cve实">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Zomnap的博客">
-<meta property="og:url" content="https://zomnap.top/2026/08/24/Taco/">
+<meta property="og:title" content="Taco——一款自动生成pickle反序列化的工具">
+<meta property="og:url" content="https://zomnap.top/2026/09/15/Taco-1/">
 <meta property="og:site_name" content="Zomnap的博客">
 <meta property="og:description" content="前言因为上上周打htb的pickle反序列化给我打破防了，所以一气之下写了个自动化pickle反序列化工具，支持自定义文件后缀，由于本人才学python，所以只写了个gen的框架，其他的webui啥的都交给ai了（顺便看看豆包和kimi谁的work牛逼），结果豆包还是牛逼点，免费的kimi真的拉完了 本工具基于python 3.10+开发，支持自定义waf绕过、多编码输出、字节码分析和利用cve实">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://zomnap.top/img/taco/1.png">
-<meta property="article:published_time" content="2026-08-24T03:12:53.424Z">
-<meta property="article:modified_time" content="2026-08-24T08:14:55.270Z">
+<meta property="og:image" content="https://zomnap.top/img/20.jpg">
+<meta property="article:published_time" content="2026-09-14T16:31:42.000Z">
+<meta property="article:modified_time" content="2026-09-14T16:33:52.444Z">
 <meta property="article:author" content="Zomnap">
+<meta property="article:tag" content="Pickle反序列化">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://zomnap.top/img/taco/1.png">
+<meta name="twitter:image" content="https://zomnap.top/img/20.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Zomnap的博客</title>
+  <title>Taco——一款自动生成pickle反序列化的工具 - Zomnap的博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -261,13 +262,13 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('/img/site-bg.webp') no-repeat center center; background-size: cover;">
+     style="background: url('/img/20.jpg') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.5)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text=""></span>
+            <span id="subtitle" data-typed-text="Taco——一款自动生成pickle反序列化的工具"></span>
           
         </div>
 
@@ -278,8 +279,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-08-24 11:12" pubdate>
-          2026年8月24日 上午
+        <time datetime="2026-09-15 00:31" pubdate>
+          2026年9月15日 凌晨
         </time>
       </span>
     
@@ -350,12 +351,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header"></h1>
+            <h1 id="seo-header">Taco——一款自动生成pickle反序列化的工具</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年8月24日 下午
+                    本文最后更新于 2026年9月15日 凌晨
                   
                 
               </p>
@@ -364,11 +365,12 @@
               <div class="markdown-body">
                 
                 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因为上上周打htb的pickle反序列化给我打破防了，所以一气之下写了个自动化pickle反序列化工具，支持自定义文件后缀，由于本人才学python，所以只写了个gen的框架，其他的webui啥的都交给ai了（顺便看看豆包和kimi谁的work牛逼），结果豆包还是牛逼点，免费的kimi真的拉完了</p>
-<p>本工具基于python 3.10+开发，支持自定义waf绕过、多编码输出、字节码分析和利用cve实时情报实时更新最新payload<br>通过nvd api配置来实时更新cve<br>当前开发环境是python 3.14.6；项目依赖为flask 3.0+和requests 2.31+；代码按python 3.10+作为支持基线，pickle协议界面支持0到5</p>
+<p>本工具基于python 3.10+开发，支持自定义waf绕过、多编码输出、字节码分析和利用cve实时情报实时更新最新payload 通过nvd api配置来实时更新cve 当前开发环境是python 3.14.6；项目依赖为flask 3.0+和requests 2.31+；代码按python 3.10+作为支持基线，pickle协议界面支持0到5</p>
 <p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/Zomnap/Taco">https://github.com/Zomnap/Taco</a></p>
 <h2 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">先安装支持<br>pip install -r requirements.txt<br>然后再启动web服务<br>py app.py<br>最后点击start.bat启动即可<br>在点开后会提示输入nvd的api以查询实时有关cve，如果没有的话直接回车即可<br></code></pre></td></tr></table></figure>
 
-<p><img src="/img/taco/1.png" srcset="/img/loading.gif" lazyload></p>
+
+
 <p>该项目结构</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">Taco/<br>├── app.py                  <span class="hljs-comment">#Flask 主程序+API 路由</span><br>├── requirements.txt<br>├── generator/<br>│   ├── __init__.py<br>│   ├── payloads.py         <span class="hljs-comment">#Payload 生成引擎（12个gadget链）</span><br>│   ├── waf_bypass.py       <span class="hljs-comment">#WAF绕过引擎（6种绕过方案）</span><br>│   └── formats.py          <span class="hljs-comment">#Raw/Gzip/Zip/PDF/自定义后缀封装</span><br>├── cve/<br>│   ├── __init__.py<br>│   └── fetcher.py          <span class="hljs-comment">#NVD CVE获取+本地缓存</span><br>├── templates/<br>│   └── index.html          <span class="hljs-comment">#前端页面</span><br>├── static/<br>│   ├── style.css           <span class="hljs-comment">#暗色主题样式</span><br>│   └── app.js              <span class="hljs-comment">#前端交互逻辑</span><br>└── cache/                  <span class="hljs-comment">#CVE缓存（自动创建）</span><br></code></pre></td></tr></table></figure>
 
@@ -535,6 +537,34 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="category-chain-item">学习笔记</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Pickle%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="print-no-link">#Pickle反序列化</a>
+      
+    </div>
   
 </div>
 
@@ -544,8 +574,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div></div>
-      <div>https://zomnap.top/2026/08/24/Taco/</div>
+      <div>Taco——一款自动生成pickle反序列化的工具</div>
+      <div>https://zomnap.top/2026/09/15/Taco-1/</div>
     </div>
     <div class="license-meta">
       
@@ -557,7 +587,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年8月24日</div>
+          <div>2026年9月15日</div>
         </div>
       
       
@@ -921,7 +951,7 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mu1gkw4f"></script>
+  <script src="/js/footer.js?v=mu1gqela"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>
