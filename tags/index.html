@@ -28,8 +28,6 @@
 <meta name="twitter:card" content="summary_large_image">
   
   
-    <meta name="referrer" content="no-referrer-when-downgrade">
-  
   
   <title>标签 - Zomnap的博客</title>
 
@@ -287,7 +285,7 @@
                 
 
 <div class="text-center tagcloud">
-  <a href="/tags/JS%E5%8E%9F%E5%9E%8B%E9%93%BE%E6%B1%A1%E6%9F%93/" style="font-size: 15px; color: #bbe">JS原型链污染</a> <a href="/tags/Pickle%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 15px; color: #bbe">Pickle反序列化</a> <a href="/tags/RCE/" style="font-size: 15px; color: #bbe">RCE</a> <a href="/tags/XEE%E6%BC%8F%E6%B4%9E/" style="font-size: 15px; color: #bbe">XEE漏洞</a> <a href="/tags/XSS%E6%BC%8F%E6%B4%9E/" style="font-size: 15px; color: #bbe">XSS漏洞</a> <a href="/tags/wp/" style="font-size: 30px; color: #337ab7">wp</a> <a href="/tags/%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E/" style="font-size: 15px; color: #bbe">提权漏洞</a> <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/" style="font-size: 22.5px; color: #779bd3">文件上传漏洞</a> <a href="/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/" style="font-size: 15px; color: #bbe">文件包含漏洞</a> <a href="/tags/%E6%97%A5%E5%B8%B8%E5%88%B7%E9%A2%98/" style="font-size: 15px; color: #bbe">日常刷题</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 22.5px; color: #779bd3">随笔</a>
+  <a href="/tags/CTF/" style="font-size: 15px; color: #bbe">CTF</a> <a href="/tags/JS%E5%8E%9F%E5%9E%8B%E9%93%BE%E6%B1%A1%E6%9F%93/" style="font-size: 15px; color: #bbe">JS原型链污染</a> <a href="/tags/Pickle%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 15px; color: #bbe">Pickle反序列化</a> <a href="/tags/RCE/" style="font-size: 15px; color: #bbe">RCE</a> <a href="/tags/XEE%E6%BC%8F%E6%B4%9E/" style="font-size: 15px; color: #bbe">XEE漏洞</a> <a href="/tags/XSS%E6%BC%8F%E6%B4%9E/" style="font-size: 15px; color: #bbe">XSS漏洞</a> <a href="/tags/wp/" style="font-size: 30px; color: #337ab7">wp</a> <a href="/tags/%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E/" style="font-size: 15px; color: #bbe">提权漏洞</a> <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/" style="font-size: 22.5px; color: #779bd3">文件上传漏洞</a> <a href="/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/" style="font-size: 15px; color: #bbe">文件包含漏洞</a> <a href="/tags/%E6%97%A5%E5%B8%B8%E5%88%B7%E9%A2%98/" style="font-size: 15px; color: #bbe">日常刷题</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 22.5px; color: #779bd3">随笔</a>
 </div>
 
               </div>
@@ -443,18 +441,18 @@
     </div>
   </div>
 
-  <div class="anime-footer-wrap">
+  <div class="anime-footer-wrap" id="site-footer">
     <div class="anime-footer">
       <div class="footer-line">
         <span id="runtime"></span>
       </div>
-      <div class="footer-line footer-statistics" data-site-hosts="zomnap.top">
-        <span id="busuanzi_container_site_uv">
-          总访客 <strong id="busuanzi_value_site_uv">711</strong> 人
+      <div class="footer-line footer-statistics">
+        <span class="footer-stat">
+          总访客 <strong data-site-uv>—</strong> 人
         </span>
-        <span id="busuanzi_container_site_pv">
+        <span class="footer-stat">
           <span class="divider" aria-hidden="true">·</span>
-          总访问 <strong id="busuanzi_value_site_pv">1503</strong> 次
+          总访问 <strong data-site-pv>—</strong> 次
         </span>
       </div>
       <div class="footer-line typing" id="footer-typing"></div>
@@ -465,7 +463,9 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mw7pnwbl"></script>
+  <script>window.BLOG_COUNTER = {"api":"https://abacus.jasoncameron.dev","namespace":"zomnap-blog","site_pv_offset":2259,"site_uv_offset":1146,"page_pv_offset":0,"page_offsets":{}};</script>
+  <script src="/js/visitor-counter.js?v=mwj238nt"></script>
+  <script src="/js/footer.js?v=mwj238nt"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>

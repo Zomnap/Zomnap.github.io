@@ -16,62 +16,7 @@ function updateRuntime() {
 setInterval(updateRuntime, 1000);
 updateRuntime();
 
-function attachOffsetCounter(element, baseline) {
-  if (!element || !window.MutationObserver) return;
-
-  const mutationConfig = {
-    childList: true,
-    characterData: true,
-    subtree: true,
-  };
-
-  const observer = new MutationObserver(() => {
-
-    const rawValue = Number.parseInt(
-      element.textContent.replace(/[^\d]/g, ""),
-      10
-    );
-    if (!Number.isFinite(rawValue)) return;
-
-    observer.disconnect();
-    element.textContent = String(baseline + rawValue);
-    observer.observe(element, mutationConfig);
-  });
-
-  observer.observe(element, mutationConfig);
-}
-
-function loadVisitorStats() {
-  const stats = document.querySelector(".footer-statistics");
-  const pagePv = document.getElementById("busuanzi_value_page_pv");
-
-  const currentHost = window.location.hostname.toLowerCase();
-  const siteHosts = ((stats && (stats.dataset.siteHosts || stats.dataset.siteHost)) || "")
-    .split(",")
-    .map((host) => host.trim().toLowerCase())
-    .filter(Boolean);
-  const shouldLoadSiteStats = stats && siteHosts.includes(currentHost);
-  if (!pagePv && !shouldLoadSiteStats) return;
-
-  if (shouldLoadSiteStats) {
-    const siteUv = document.getElementById("busuanzi_value_site_uv");
-    const sitePv = document.getElementById("busuanzi_value_site_pv");
-    const siteUvBase = Number.parseInt(siteUv && siteUv.textContent, 10) || 0;
-    const sitePvBase = Number.parseInt(sitePv && sitePv.textContent, 10) || 0;
-
-    attachOffsetCounter(siteUv, siteUvBase);
-    attachOffsetCounter(sitePv, sitePvBase);
-  }
-
-  const script = document.createElement("script");
-  script.src =
-    "https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
-  script.defer = true;
-  script.referrerPolicy = "no-referrer-when-downgrade";
-  document.head.appendChild(script);
-}
-
-loadVisitorStats();
+// 站点 PV / UV 由 /js/visitor-counter.js 统一处理（跨域名同一份数据），此处不再重复加载统计脚本
 
 const typingTexts = [
   "欢迎来到我的博客！",
