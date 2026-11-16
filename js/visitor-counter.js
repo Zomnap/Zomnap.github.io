@@ -22,7 +22,22 @@
   var pageOffset = Number(cfg.page_pv_offset) || 0;
   var sitePvOffset = Number(cfg.site_pv_offset) || 0;
   var siteUvOffset = Number(cfg.site_uv_offset) || 0;
-  var pageOffsets = cfg.page_offsets || {};
+
+  // 单篇文章的起始偏移（把历史阅读量接过来），key 做同样的大小写/斜杠归一化，
+  // 这样配置文件里写 "/2026/04/05/xss/" 或 "/2026/04/05/XSS" 都能命中
+  function buildOffsetMap(map) {
+    var result = {};
+    if (!map || typeof map !== 'object') return result;
+    for (var raw in map) {
+      if (!Object.prototype.hasOwnProperty.call(map, raw)) continue;
+      var value = Number(map[raw]);
+      if (!isFinite(value) || value === 0) continue;
+      result[normalizePath(raw)] = value;
+    }
+    return result;
+  }
+
+  var pageOffsets = buildOffsetMap(cfg.page_offsets);
 
   if (typeof window.fetch !== 'function') return;
 
